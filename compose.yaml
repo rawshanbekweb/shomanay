@@ -1,0 +1,16 @@
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: file:/data/app.db
+      AUTH_USERS: ${AUTH_USERS:?Set AUTH_USERS in .env}
+      APP_ORIGIN: ${APP_ORIGIN:?Set APP_ORIGIN in .env}
+      DATA_MODE: ${DATA_MODE:-demo}
+    volumes:
+      - app-data:/data
+volumes:
+  app-data:

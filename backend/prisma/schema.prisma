@@ -1,0 +1,114 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Task {
+  id                       String   @id @default(cuid())
+  code                     String   @unique
+  issueId                  String?
+  objectId                 String?
+  objectName               String?
+  mfyId                    String
+  title                    String
+  actionDescription        String
+  mainExecutorOrg          String
+  executorPerson           String
+  inspectorOrg             String
+  inspectorPerson          String
+  status                   String   @default("assigned")
+  priority                 String   @default("medium")
+  createdDate              String
+  deadline                 String
+  completedDate            String?
+  expectedResult           String
+  verificationMethod       String
+  isOverdue                Boolean  @default(false)
+  evidence                 String?  // JSON string
+  review                   String?  // JSON string
+  extensions               String   @default("[]") // JSON string array
+  postExecutionMeasurement String?  // JSON string
+}
+
+model Issue {
+  id               String   @id @default(cuid())
+  code             String   @unique
+  title            String
+  description      String
+  category         String
+  priority         String
+  objectId         String?
+  objectName       String?
+  mfyId            String
+  source           String   @default("manual")
+  reportedDate     String
+  status           String   @default("open")
+  relatedIndicator String?
+  assignedTaskId   String?
+  reportedBy       String
+  evidenceNotes    String?
+}
+
+model DistrictObject {
+  id                 String  @id
+  name               String
+  type               String
+  mfyId              String
+  address            String
+  coordsLat          Float
+  coordsLng          Float
+  responsibleOrg     String
+  curator            String
+  status             String
+  source             String
+  updatedDate        String
+  description        String
+  photos             String  @default("[]") // JSON string array
+  documents          String  @default("[]") // JSON string array
+  capacity           String? // JSON string
+  metrics            String? // JSON string
+  relatedIssuesCount Int     @default(0)
+  relatedTasksCount  Int     @default(0)
+}
+
+model MFY {
+  id                  String @id
+  name                String
+  code                String
+  population          Int
+  areaSqKm            Float
+  centerLat           Float
+  centerLng           Float
+  leaderName          String
+  phone               String
+  activeProjectsCount Int    @default(0)
+  openIssuesCount     Int    @default(0)
+}
+
+model Indicator {
+  id            String @id
+  name          String
+  category      String
+  value         Float
+  unit          String
+  changePercent Float
+  plan          Float
+  fact          Float
+  status        String
+  period        String
+}
+
+model Investment {
+  id                String @id
+  projectName       String
+  investor          String
+  costMlnUzs        Float
+  createdJobs       Int
+  mfyId             String
+  stage             String
+  completionPercent Int
+}

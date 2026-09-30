@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+:root {
+  --background: #060d17;
+  --foreground: #f1f5f9;
+  --card: #081324;
+  --card-foreground: #f1f5f9;
+  --primary: #0284c7;
+  --primary-foreground: #ffffff;
+  --border: #1e3a5f;
+}
+
+body {
+  background-color: #060d17;
+  color: #f1f5f9;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  letter-spacing: -0.01em;
+}
+
+/* Custom leaflet tooltip for light state map */
+.custom-map-tooltip {
+  background-color: #0a3d8f !important;
+  color: #ffffff !important;
+  border: 1px solid #1e40af !important;
+  border-radius: 8px !important;
+  padding: 4px 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Print styles */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+}
