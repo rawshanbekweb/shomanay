@@ -42,7 +42,7 @@ function LoginForm() {
   }
 
   return (
-    <div className="min-h-screen bg-[#060d17] flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="fixed inset-0 z-[9999] bg-[#060d17] flex items-center justify-center p-4 overflow-auto">
       {/* Animated background grid */}
       <div className="absolute inset-0 opacity-[0.03]"
         style={{

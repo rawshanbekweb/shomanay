@@ -2,16 +2,28 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useApp } from '@/context/AppContext';
 import { Language } from '@/types';
-import { Globe, Shield, AlertTriangle, ChevronDown, LayoutDashboard, MapPin, CheckSquare, AlertOctagon, TrendingUp, Factory, BarChart3, Layers, FileSpreadsheet, Database, Menu, X, Landmark } from 'lucide-react';
+import { Globe, Shield, AlertTriangle, ChevronDown, LayoutDashboard, MapPin, CheckSquare, AlertOctagon, TrendingUp, Factory, BarChart3, Layers, FileSpreadsheet, Database, Menu, X, Landmark, LogOut } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const { language, setLanguage, currentUser, t, tasks, issues } = useApp();
   const pathname = usePathname();
+  const router = useRouter();
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  async function handleLogout() {
+    setLoggingOut(true);
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } finally {
+      router.replace('/login');
+      router.refresh();
+    }
+  }
 
   // Counters
   const overdueCount = tasks.filter((t) => t.isOverdue && t.status !== 'accepted' && t.status !== 'cancelled').length;
@@ -144,11 +156,31 @@ export const Navbar: React.FC = () => {
             </div>
           </nav>
 
-          {/* Right Tools: Role & Language Selector */}
+          {/* Right Tools: Role, Logout & Language Selector */}
           <div className="flex items-center gap-2">
-            <div className="text-xs text-slate-200 flex items-center gap-2" title={currentUser.organization}>
-              <Shield className="w-4 h-4" />{currentUser.name} ({currentUser.role})
-            </div>
+            {currentUser.id ? (
+              <div className="flex items-center gap-1.5">
+                <div className="text-xs text-slate-200 flex items-center gap-2" title={currentUser.organization}>
+                  <Shield className="w-4 h-4" />
+                  <span className="hidden sm:inline">{currentUser.name}</span>
+                  <span className="text-slate-400">({currentUser.role})</span>
+                </div>
+                <button
+                  onClick={handleLogout}
+                  disabled={loggingOut}
+                  title="Chiqish"
+                  className="flex items-center gap-1 px-2 py-1.5 rounded-lg bg-red-950/60 hover:bg-red-900/60 border border-red-900/50 hover:border-red-700/60 text-red-400 hover:text-red-300 transition-all text-[11px] disabled:opacity-50"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">{loggingOut ? '...' : 'Chiqish'}</span>
+                </button>
+              </div>
+            ) : (
+              <div className="text-xs text-slate-500 flex items-center gap-1.5">
+                <div className="w-3 h-3 border border-slate-600 border-t-blue-500 rounded-full animate-spin" />
+                Yuklanmoqda...
+              </div>
+            )}
 
             {/* Language Selector */}
             <div className="relative">

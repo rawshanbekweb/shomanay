@@ -20,6 +20,8 @@ export async function proxy(request: NextRequest) {
       res.headers.set('Cache-Control', 'private, no-store');
       res.headers.set('X-Auth-User', user.id);
       res.headers.set('X-Auth-Role', user.role);
+      res.headers.set('X-Auth-Name', user.name);
+      res.headers.set('X-Auth-Org', user.organization);
       return res;
     }
     // Token eskirgan — cookie o'chiriladi, login ga redirect
