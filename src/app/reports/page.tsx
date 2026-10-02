@@ -1,15 +1,16 @@
 'use client';
 import { useState } from 'react';
-import { Download, FileText, Printer } from 'lucide-react';
+import { Download, FileSpreadsheet, FileText, Printer } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 import { PageHero } from '@/components/PageKit';
 import { downloadCsv } from '@/lib/csv';
+import { downloadXlsx } from '@/lib/xlsx';
 import { reportRows } from '@/lib/reports';
 export default function ReportsPage() {
   const { tasks, issues, investments, mfys, t, isLoading } = useApp();
   const [type, setType] = useState('tasks');
   const [mfy, setMfy] = useState('all');
-  const [headers, ...rows] = reportRows(type, mfy, { tasks, issues, investments });
+  const [headers, ...rows] = reportRows(type, mfy, { tasks, issues, investments }, Object.fromEntries(mfys.map(m => [m.id, m.name])));
   return <div className="sc-stack">
     <PageHero
       icon={FileText}
@@ -34,6 +35,7 @@ export default function ReportsPage() {
           <option value="all">Barcha MFYlar</option>{mfys.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}
         </select>
         <button disabled={isLoading} onClick={() => downloadCsv(`Shomanay_${type}_${mfy}.csv`, [headers, ...rows])} className="sc-button sc-primary"><Download size={15} /> {t.exportCsv}</button>
+        <button disabled={isLoading} onClick={() => downloadXlsx(`Shomanay_${type}_${mfy}.xlsx`, type, [headers, ...rows])} className="sc-button"><FileSpreadsheet size={15} /> Excel (.xlsx)</button>
         <button onClick={() => window.print()} className="sc-button"><Printer size={15} /> {t.printReport}</button>
       </div>
     </div>

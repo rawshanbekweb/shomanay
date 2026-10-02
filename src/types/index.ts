@@ -267,4 +267,8 @@ export interface SectorIndicator {
   };
   trendPercent: number;
   isPositiveTrend: boolean;
+  /** Ma'lumot manbası, sanası hám juwapker (TZ §12) */
+  source?: string;
+  updatedAt?: string;
+  updatedBy?: string;
 }
