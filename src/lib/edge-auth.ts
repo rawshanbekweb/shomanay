@@ -25,7 +25,8 @@ const enc = new TextEncoder();
 const dec = new TextDecoder();
 
 async function getHmacKey(): Promise<CryptoKey> {
-  const secret = process.env.SESSION_SECRET ?? 'fallback-dev-secret-change-in-prod';
+  // SESSION_SECRET berilmasa, kalit AUTH_USERS dan hosil qilinadi (auth.ts bilan bir xil).
+  const secret = process.env.SESSION_SECRET || Array.from(new Uint8Array(await sha256(`shomanay-session:${process.env.AUTH_USERS || ''}`)), b => b.toString(16).padStart(2, '0')).join('');
   return crypto.subtle.importKey(
     'raw', enc.encode(secret),
     { name: 'HMAC', hash: 'SHA-256' },
@@ -60,7 +61,7 @@ function getAccounts() {
 
 export async function createSessionToken(user: User): Promise<string> {
   const payload = JSON.stringify({ id: user.id, name: user.name, role: user.role, organization: user.organization, exp: Date.now() + SESSION_MAX_AGE * 1000 });
-  const b64 = btoa(payload);
+  const b64 = btoa(String.fromCharCode(...enc.encode(payload)));
   const key = await getHmacKey();
   const sig = await crypto.subtle.sign('HMAC', key, enc.encode(b64));
   const sigB64 = btoa(String.fromCharCode(...new Uint8Array(sig)));
@@ -78,8 +79,10 @@ export async function verifySessionToken(token: string): Promise<User | null> {
     const actualSig = Uint8Array.from(atob(sigB64), c => c.charCodeAt(0));
     if (!constantTimeEqual(expectedSig, actualSig.buffer)) return null;
     const payload = JSON.parse(dec.decode(Uint8Array.from(atob(b64), c => c.charCodeAt(0))));
-    if (Date.now() > payload.exp) return null;
-    return { id: payload.id, name: payload.name, role: payload.role, title: payload.role, organization: payload.organization };
+    if (typeof payload.exp !== 'number' || Date.now() > payload.exp) return null;
+    const account = getAccounts().find(u => u.username === payload.id);
+    if (!account) return null;
+    return { id: account.username, name: account.name, role: account.role, title: account.role, organization: account.organization };
   } catch { return null; }
 }
 

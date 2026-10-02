@@ -19,3 +19,16 @@ test('cross-origin writes and non-JSON writes are rejected', () => {
   assert.throws(() => authorize(request(account.password, 'POST', { 'content-type': 'text/plain' })), (e: unknown) => e instanceof HttpError && e.status === 415);
   assert.equal(authorize(request(account.password, 'POST', { origin: 'https://app.example' })).id, 'test');
 });
+test('login session cookie is accepted by API routes and follows current account config', async () => {
+  process.env.AUTH_USERS = JSON.stringify([account]); process.env.SESSION_SECRET = 'test-session-secret';
+  const { createSessionToken, verifyCredentials } = await import('../src/lib/edge-auth');
+  const user = await verifyCredentials('test', account.password);
+  assert.ok(user);
+  const token = await createSessionToken(user);
+  const withCookie = (value: string) => new Request('https://app.example/api/tasks', { headers: { cookie: `other=1; sh_session=${value}` } });
+  assert.equal(authenticate(withCookie(token)).organization, 'Org A');
+  assert.throws(() => authenticate(withCookie(token.slice(0, -4) + 'AAA=')), (e: unknown) => e instanceof HttpError && e.status === 401);
+  process.env.AUTH_USERS = JSON.stringify([{ ...account, username: 'someone-else' }]);
+  assert.throws(() => authenticate(withCookie(token)), (e: unknown) => e instanceof HttpError && e.status === 401);
+  delete process.env.SESSION_SECRET;
+});

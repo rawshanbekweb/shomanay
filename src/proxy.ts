@@ -16,12 +16,9 @@ export async function proxy(request: NextRequest) {
   if (sessionToken) {
     const user = await verifySessionToken(sessionToken);
     if (user) {
+      // API route'lar cookie'ni o'zi qayta tekshiradi (src/lib/auth.ts)
       const res = NextResponse.next();
       res.headers.set('Cache-Control', 'private, no-store');
-      res.headers.set('X-Auth-User', user.id);
-      res.headers.set('X-Auth-Role', user.role);
-      res.headers.set('X-Auth-Name', user.name);
-      res.headers.set('X-Auth-Org', user.organization);
       return res;
     }
     // Token eskirgan — cookie o'chiriladi, login ga redirect
