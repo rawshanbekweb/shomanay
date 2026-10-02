@@ -20,7 +20,7 @@ export const ObjectPassportModal: React.FC = () => {
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'enterprise':
-        return <Building2 className="w-6 h-6 text-[#0a3d8f]" />;
+        return <Building2 className="w-6 h-6 text-[#6d57d6]" />;
       case 'investment_project':
         return <TrendingUp className="w-6 h-6 text-emerald-600" />;
       case 'industrial_zone':
@@ -37,7 +37,7 @@ export const ObjectPassportModal: React.FC = () => {
       case 'active':
         return <span className="px-3 py-1 text-xs font-bold rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">{t.statusActive}</span>;
       case 'in_progress':
-        return <span className="px-3 py-1 text-xs font-bold rounded-full bg-blue-100 text-[#0a3d8f] border border-blue-200">{t.statusInProgress}</span>;
+        return <span className="px-3 py-1 text-xs font-bold rounded-full bg-violet-100 text-[#6d57d6] border border-violet-200">{t.statusInProgress}</span>;
       case 'risk':
         return <span className="px-3 py-1 text-xs font-bold rounded-full bg-red-100 text-red-700 border border-red-200 animate-pulse">{t.statusRisk}</span>;
       default:
@@ -46,7 +46,7 @@ export const ObjectPassportModal: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-[#111620]/60 backdrop-blur-xs animate-in fade-in duration-200">
       <div className="relative w-full max-w-4xl max-h-[92vh] bg-white border border-slate-200 rounded-3xl shadow-2xl overflow-hidden flex flex-col">
         {/* Header in Official Blue */}
         <div className="flex items-start justify-between p-6 sm:p-8 border-b border-slate-200 bg-slate-50">
@@ -56,14 +56,14 @@ export const ObjectPassportModal: React.FC = () => {
             </div>
             <div>
               <div className="flex items-center space-x-3">
-                <span className="text-xs font-mono font-bold tracking-wider px-2.5 py-0.5 rounded-md bg-blue-100 text-[#0a3d8f] border border-blue-200">
+                <span className="text-xs font-mono font-bold tracking-wider px-2.5 py-0.5 rounded-md bg-violet-100 text-[#6d57d6] border border-violet-200">
                   {obj.id.toUpperCase()}
                 </span>
                 {getStatusBadge(obj.status)}
               </div>
-              <h2 className="text-xl sm:text-2xl font-black text-slate-900 mt-2 leading-tight">{obj.name}</h2>
+              <h2 className="text-xl sm:text-2xl font-semibold text-slate-900 mt-2 leading-tight">{obj.name}</h2>
               <p className="text-xs sm:text-sm text-slate-500 flex items-center mt-1">
-                <MapPin className="w-4 h-4 mr-1 text-blue-600 shrink-0" />
+                <MapPin className="w-4 h-4 mr-1 text-violet-400 shrink-0" />
                 {mfy?.name || 'Shomanay'}, {obj.address}
               </p>
             </div>
@@ -82,7 +82,7 @@ export const ObjectPassportModal: React.FC = () => {
             onClick={() => setActiveTab('info')}
             className={`px-4 py-3 text-xs sm:text-sm font-bold border-b-2 transition-all whitespace-nowrap ${
               activeTab === 'info'
-                ? 'border-[#0a3d8f] text-[#0a3d8f]'
+                ? 'border-[#6d57d6] text-[#6d57d6]'
                 : 'border-transparent text-slate-500 hover:text-slate-800'
             }`}
           >
@@ -93,7 +93,7 @@ export const ObjectPassportModal: React.FC = () => {
               onClick={() => setActiveTab('capacity')}
               className={`px-4 py-3 text-xs sm:text-sm font-bold border-b-2 transition-all whitespace-nowrap ${
                 activeTab === 'capacity'
-                  ? 'border-[#0a3d8f] text-[#0a3d8f]'
+                  ? 'border-[#6d57d6] text-[#6d57d6]'
                   : 'border-transparent text-slate-500 hover:text-slate-800'
               }`}
             >
@@ -104,13 +104,13 @@ export const ObjectPassportModal: React.FC = () => {
             onClick={() => setActiveTab('tasks')}
             className={`px-4 py-3 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center gap-1.5 whitespace-nowrap ${
               activeTab === 'tasks'
-                ? 'border-[#0a3d8f] text-[#0a3d8f]'
+                ? 'border-[#6d57d6] text-[#6d57d6]'
                 : 'border-transparent text-slate-500 hover:text-slate-800'
             }`}
           >
             Tapsırmalar & Mashqalalar
             {(relatedTasks.length > 0 || relatedIssues.length > 0) && (
-              <span className="px-2 py-0.5 text-xs rounded-full bg-blue-100 text-[#0a3d8f] font-bold">
+              <span className="px-2 py-0.5 text-xs rounded-full bg-violet-100 text-[#6d57d6] font-bold">
                 {relatedTasks.length + relatedIssues.length}
               </span>
             )}
@@ -119,7 +119,7 @@ export const ObjectPassportModal: React.FC = () => {
             onClick={() => setActiveTab('photos')}
             className={`px-4 py-3 text-xs sm:text-sm font-bold border-b-2 transition-all whitespace-nowrap ${
               activeTab === 'photos'
-                ? 'border-[#0a3d8f] text-[#0a3d8f]'
+                ? 'border-[#6d57d6] text-[#6d57d6]'
                 : 'border-transparent text-slate-500 hover:text-slate-800'
             }`}
           >
@@ -129,7 +129,7 @@ export const ObjectPassportModal: React.FC = () => {
             onClick={() => setActiveTab('docs')}
             className={`px-4 py-3 text-xs sm:text-sm font-bold border-b-2 transition-all whitespace-nowrap ${
               activeTab === 'docs'
-                ? 'border-[#0a3d8f] text-[#0a3d8f]'
+                ? 'border-[#6d57d6] text-[#6d57d6]'
                 : 'border-transparent text-slate-500 hover:text-slate-800'
             }`}
           >
@@ -141,8 +141,8 @@ export const ObjectPassportModal: React.FC = () => {
         <div className="flex-1 overflow-y-auto p-6 sm:p-8 space-y-6">
           {activeTab === 'info' && (
             <div className="space-y-6">
-              <div className="p-5 rounded-2xl bg-blue-50/50 border border-blue-100">
-                <h4 className="text-xs font-bold text-[#0a3d8f] uppercase tracking-wider mb-2">Túsindirme</h4>
+              <div className="p-5 rounded-2xl bg-violet-50/50 border border-violet-100">
+                <h4 className="text-xs font-bold text-[#6d57d6] uppercase tracking-wider mb-2">Túsindirme</h4>
                 <p className="text-slate-700 text-sm leading-relaxed">{obj.description}</p>
               </div>
 
@@ -157,7 +157,7 @@ export const ObjectPassportModal: React.FC = () => {
                   <div className="flex items-center justify-between text-xs sm:text-sm">
                     <span className="text-slate-500">Kurator / Mas&apos;ul:</span>
                     <span className="text-slate-900 font-bold flex items-center gap-1.5">
-                      <User className="w-4 h-4 text-[#0a3d8f]" />
+                      <User className="w-4 h-4 text-[#6d57d6]" />
                       {obj.curator}
                     </span>
                   </div>
@@ -190,7 +190,7 @@ export const ObjectPassportModal: React.FC = () => {
                   {obj.metrics?.exportVolumeUsd && (
                     <div className="flex items-center justify-between text-xs sm:text-sm">
                       <span className="text-slate-500">Eksport kólemi:</span>
-                      <span className="text-[#0a3d8f] font-bold">${obj.metrics.exportVolumeUsd.toLocaleString()}</span>
+                      <span className="text-[#6d57d6] font-bold">${obj.metrics.exportVolumeUsd.toLocaleString()}</span>
                     </div>
                   )}
                   <div className="flex items-center justify-between text-xs sm:text-sm">
@@ -214,7 +214,7 @@ export const ObjectPassportModal: React.FC = () => {
                     <h3 className="text-base font-bold text-slate-900">{obj.capacity.resourceType}</h3>
                     <p className="text-xs text-slate-500">Juwapkerlik balansı boyınsha rásmiy quwatlılıq</p>
                   </div>
-                  <span className="px-3.5 py-1.5 rounded-xl bg-blue-100 text-[#0a3d8f] font-mono font-bold text-sm border border-blue-200">
+                  <span className="px-3.5 py-1.5 rounded-xl bg-violet-100 text-[#6d57d6] font-mono font-bold text-sm border border-violet-200">
                     Jámi: {obj.capacity.total} {obj.capacity.unit}
                   </span>
                 </div>
@@ -238,7 +238,7 @@ export const ObjectPassportModal: React.FC = () => {
                 </div>
 
                 <div className="p-4 rounded-xl bg-white text-xs text-slate-600 border border-slate-200 flex items-center gap-2">
-                  <ShieldCheck className="w-5 h-5 shrink-0 text-[#0a3d8f]" />
+                  <ShieldCheck className="w-5 h-5 shrink-0 text-[#6d57d6]" />
                   <span>Rásmiy eskertiw: Erkin quwat kórsetkishi jańa investiciyalıq joybarlarǵa qosılıw ushın texnik shárt alıwǵa ruxsat beredi.</span>
                 </div>
               </div>
@@ -281,7 +281,7 @@ export const ObjectPassportModal: React.FC = () => {
               {/* Related Tasks */}
               <div>
                 <h4 className="text-sm font-bold text-slate-900 mb-3 flex items-center">
-                  <CheckCircle2 className="w-4 h-4 mr-2 text-[#0a3d8f]" />
+                  <CheckCircle2 className="w-4 h-4 mr-2 text-[#6d57d6]" />
                   Baylanıslı Tapsırmalar & Qadaǵalaw ({relatedTasks.length})
                 </h4>
                 {relatedTasks.length === 0 ? (
@@ -296,7 +296,7 @@ export const ObjectPassportModal: React.FC = () => {
                             <span className={`text-xs px-2.5 py-0.5 rounded-full font-bold ${
                               tsk.status === 'accepted' ? 'bg-emerald-100 text-emerald-800' :
                               tsk.status === 'under_review' ? 'bg-amber-100 text-amber-800' :
-                              'bg-blue-100 text-[#0a3d8f]'
+                              'bg-violet-100 text-[#6d57d6]'
                             }`}>
                               {tsk.status}
                             </span>
@@ -358,20 +358,20 @@ export const ObjectPassportModal: React.FC = () => {
         {/* Footer actions in Crisp White */}
         <div className="p-5 border-t border-slate-200 bg-slate-50 flex items-center justify-between">
           <div className="text-xs text-slate-500">
-            FERGA Yagona Obyekt Identifikatorı: <code className="text-[#0a3d8f] font-bold">{obj.id}</code>
+            FERGA Yagona Obyekt Identifikatorı: <code className="text-[#6d57d6] font-bold">{obj.id}</code>
           </div>
           <div className="flex items-center gap-3">
             <Link
               href="/tasks"
               onClick={closeObjectPassport}
-              className="px-4 py-2 text-xs font-bold text-[#0a3d8f] bg-white hover:bg-blue-50 border border-slate-200 rounded-xl transition-colors flex items-center gap-1.5 shadow-2xs"
+              className="px-4 py-2 text-xs font-bold text-[#6d57d6] bg-white hover:bg-violet-50 border border-slate-200 rounded-xl transition-colors flex items-center gap-1.5 shadow-2xs"
             >
-              <PlusCircle className="w-4 h-4 text-[#0a3d8f]" />
+              <PlusCircle className="w-4 h-4 text-[#6d57d6]" />
               Tapsırma biriktiriw
             </Link>
             <button
               onClick={closeObjectPassport}
-              className="px-5 py-2 text-xs font-bold text-white bg-[#0a3d8f] hover:bg-blue-800 rounded-xl shadow-sm transition-colors"
+              className="px-5 py-2 text-xs font-bold text-white bg-[#6d57d6] hover:bg-violet-500/15 rounded-xl shadow-sm transition-colors"
             >
               {t.btnClose}
             </button>

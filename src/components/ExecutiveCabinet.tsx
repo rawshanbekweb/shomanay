@@ -3,341 +3,286 @@
 import React from 'react';
 import Link from 'next/link';
 import { useApp } from '@/context/AppContext';
-import { AlertTriangle, CheckCircle2, Clock, TrendingUp, AlertOctagon, Building2, ArrowRight, Sparkles, Compass, FileCheck, Landmark } from 'lucide-react';
+import { MfyMap } from '@/components/MfyMap';
+import { AreaChart, Columns, Donut, HBars, Sparkline, countBy, cumulativeByMonth, fmtNum, PALETTE } from '@/components/charts';
+import { AlertTriangle, CheckCircle2, Clock, TrendingUp, AlertOctagon, Building2, ArrowRight, Sparkles, FileCheck } from 'lucide-react';
+
+type Kpi = {
+  label: string;
+  value: string;
+  unit: string;
+  note: string;
+  tone?: 'positive' | 'negative';
+  icon: React.ComponentType<{ size?: number }>;
+  href: string;
+};
+
+
+const KPI_COLORS = ['#8b72ff', '#2bb5d6', '#e59a45', '#e0679c'];
+const DONUT_COLORS = ['#4bd8a6', '#6b8cff', '#f27fb0', '#f0cf5f', '#b88cff', '#5fd0e8', '#e59a45'];
+
+const statusTone = (status: string) =>
+  status === 'accepted' ? 'good' : status === 'under_review' ? 'warn' : 'accent';
+const priorityTone = (priority: string) =>
+  priority === 'critical' ? 'bad' : priority === 'high' ? 'warn' : 'neutral';
 
 export const ExecutiveCabinet: React.FC = () => {
-  const { t, tasks, issues, openObjectPassport } = useApp();
+  const { t, tasks, issues, mfys, investments, openObjectPassport } = useApp();
 
-  // Calculations for FR-11 Management KPIs
   const totalTasks = tasks.length;
-  const acceptedOnTimeTasks = tasks.filter(
-    (t) => t.status === 'accepted' && !t.isOverdue
-  ).length;
+  const acceptedOnTimeTasks = tasks.filter((task) => task.status === 'accepted' && !task.isOverdue).length;
   const onTimePercentage = totalTasks > 0 ? Math.round((acceptedOnTimeTasks / totalTasks) * 100) : 100;
 
-  const overdueTasks = tasks.filter((t) => t.isOverdue && t.status !== 'accepted' && t.status !== 'cancelled');
-  const underReviewTasks = tasks.filter((t) => t.status === 'under_review');
-  const criticalIssues = issues.filter((i) => i.priority === 'critical' && i.status !== 'resolved');
+  const overdueTasks = tasks.filter((task) => task.isOverdue && task.status !== 'accepted' && task.status !== 'cancelled');
+  const underReviewTasks = tasks.filter((task) => task.status === 'under_review');
+  const criticalIssues = issues.filter((issue) => issue.priority === 'critical' && issue.status !== 'resolved');
+  const openIssues = issues.filter((issue) => issue.status !== 'resolved');
+
+  const kpis: Kpi[] = [
+    {
+      label: t.kpiTasksOnTime, value: `${onTimePercentage}%`, unit: `${acceptedOnTimeTasks} / ${totalTasks} tapsırma óz waqtında`,
+      note: onTimePercentage >= 70 ? 'Normadan joqarı' : 'Normadan tómen', tone: onTimePercentage >= 70 ? 'positive' : 'negative',
+      icon: CheckCircle2, href: '/tasks',
+    },
+    {
+      label: t.kpiOverdueTasks, value: String(overdueTasks.length), unit: overdueTasks.length > 0 ? 'Múddeti ótken tapsırmalar' : 'Keshigiw tirkelmegen',
+      note: overdueTasks.length > 0 ? 'Itibar talap etiledi' : 'Hámmesi tártipte', tone: overdueTasks.length > 0 ? 'negative' : 'positive',
+      icon: Clock, href: '/tasks',
+    },
+    {
+      label: t.kpiUnderReviewTasks, value: String(underReviewTasks.length), unit: 'Dáliller tapsırılǵan',
+      note: 'Qabıllaw kutilip atır', icon: FileCheck, href: '/tasks',
+    },
+    {
+      label: t.kpiOpenIssues, value: String(criticalIssues.length), unit: 'kritikalıq mashqala',
+      note: `Jámi: ${openIssues.length} ashıq`, tone: criticalIssues.length > 0 ? 'negative' : 'positive',
+      icon: AlertOctagon, href: '/issues',
+    },
+  ];
+
+  const now = new Date();
+  const today = `${String(now.getDate()).padStart(2, '0')}.${String(now.getMonth() + 1).padStart(2, '0')}.${now.getFullYear()}`;
+  const monthly = (dates: string[]) => cumulativeByMonth(dates, 8);
+  const sparks = [
+    monthly(tasks.filter((x) => x.status === 'accepted' && !x.isOverdue).map((x) => x.completedDate ?? x.createdDate)),
+    monthly(overdueTasks.map((x) => x.deadline)),
+    monthly(underReviewTasks.map((x) => x.createdDate)),
+    monthly(criticalIssues.map((x) => x.reportedDate)),
+  ];
+  const trend = cumulativeByMonth(tasks.map((x) => x.createdDate), 8);
+  const statusMap = new Map<string, number>();
+  tasks.forEach((x) => statusMap.set(x.status, (statusMap.get(x.status) ?? 0) + 1));
+  const donutItems = [...statusMap.entries()].sort((l, r) => r[1] - l[1]).map(([label, value], i) => ({ label, value, color: DONUT_COLORS[i % DONUT_COLORS.length] }));
+
+  const populationBars = [...mfys].sort((l, r) => r.population - l.population).map((m, i) => ({
+    label: m.name.replace(' MPJ', ''), value: m.population, text: fmtNum(m.population), color: PALETTE[i % PALETTE.length],
+  }));
+  const stageItems = countBy(investments, (x) => x.stage).map(([label, value], i) => ({ label: label.replace(/_/g, ' '), value, color: DONUT_COLORS[i % DONUT_COLORS.length] }));
+  const issueBars = countBy(issues, (x) => x.category).map(([label, value], i) => ({ label: label.replace(/_/g, ' '), value, color: PALETTE[(i + 2) % PALETTE.length] }));
+  const priorityItems = countBy(issues, (x) => x.priority).map(([label, value]) => ({
+    label, value, color: label === 'critical' ? '#ff7a8a' : label === 'high' ? '#e59a45' : label === 'medium' ? '#f0cf5f' : '#4bd8a6',
+  }));
+  const costByMfy = mfys.map((m) => ({
+    label: m.name.replace(' MPJ', ''),
+    value: Math.round(investments.filter((x) => x.mfyId === m.id).reduce((sum, x) => sum + x.totalCostMlnUzs, 0) / 1000 * 10) / 10,
+  }));
+  const jobsByMfy = mfys.map((m) => ({
+    label: m.name.replace(' MPJ', ''),
+    value: investments.filter((x) => x.mfyId === m.id).reduce((sum, x) => sum + x.plannedJobs, 0),
+  }));
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-300">
-      {/* Top Banner / District Executive Summary in Prestigious State Blue */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#0a3d8f] via-[#0e4da4] to-[#1259b8] text-white p-8 lg:p-10 shadow-xl border border-blue-900/20">
-        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
-          <div className="space-y-3 max-w-3xl">
-            <div className="flex items-center gap-2.5">
-              <span className="px-3 py-1 rounded-full text-xs font-bold bg-white/15 text-white backdrop-blur-md border border-white/20 flex items-center gap-1.5 shadow-xs">
-                <Landmark className="w-3.5 h-3.5 text-amber-300" />
-                Shomanay Rayonı Hákimligi Rásmiy Operativ Kabineti (FR-11)
+    <div className="sc-stack">
+      <MfyMap />
+
+      <section className="sc-live-kpis" aria-label="KPI">
+        {kpis.map((kpi, index) => {
+          const Icon = kpi.icon;
+          return (
+            <Link key={kpi.label} href={kpi.href} className="sc-live-kpi" style={{ ['--sc-order' as string]: index, ['--k' as string]: KPI_COLORS[index % KPI_COLORS.length] }}>
+              <span className="sc-live-kpi-label">
+                <span>{kpi.label}</span>
+                <span className="sc-kpi-badge"><Icon size={16} /></span>
               </span>
-              <span className="text-xs text-blue-100 font-mono">30.09.2026</span>
-            </div>
-            <h1 className="text-3xl lg:text-4xl font-black text-white tracking-tight">
-              Tuman Rawajlanıwı & Ijro Intizomi Nazorati
-            </h1>
-            <p className="text-blue-100 text-sm sm:text-base leading-relaxed">
-              Mashqaladan ➡️ tastıyıqlanǵan nátiyjege shekem tolıq qadaǵalaw sikli. Obyektler pasportı,
-              resurs quwatlılıqları, dálilli tapsırmalar hám ǵárezsiz qabıllaw monitoringi.
-            </p>
-          </div>
+              <span className="sc-kpi-row">
+                <span className="sc-kpi-main">
+                  <strong>{kpi.value}</strong>
+                  <span className="sc-live-kpi-unit">{kpi.unit}</span>
+                </span>
+                <Sparkline values={sparks[index]} color={KPI_COLORS[index % KPI_COLORS.length]} />
+              </span>
+              <span className="sc-kpi-foot">
+                <span>{today}</span>
+                <span className="sc-change" data-tone={kpi.tone}>{kpi.note}</span>
+              </span>
+            </Link>
+          );
+        })}
+      </section>
 
-          <div className="flex flex-wrap items-center gap-3.5 shrink-0">
-            <Link
-              href="/tasks"
-              className="px-5 py-3 rounded-xl bg-white hover:bg-slate-50 text-[#0a3d8f] text-xs font-extrabold shadow-lg transition-all flex items-center gap-2"
-            >
-              <span>{t.btnCreateTask}</span>
-              <ArrowRight className="w-4 h-4 text-[#0a3d8f]" />
-            </Link>
-            <Link
-              href="/map"
-              className="px-5 py-3 rounded-xl bg-blue-800/60 hover:bg-blue-800 text-white text-xs font-bold border border-white/30 backdrop-blur-md transition-all flex items-center gap-2"
-            >
-              <Compass className="w-4 h-4 text-amber-300" />
-              <span>GIS Kartaǵa ótiw</span>
-            </Link>
-          </div>
-        </div>
+      <div className="sc-section-title">
+        <h2>Tuman haqqında tiykarǵı maǵlıwmat</h2>
+        <Link href="/indicators" className="sc-text-link">Kórsetkishler <ArrowRight size={14} /></Link>
       </div>
 
-      {/* KPI Counters Grid in Command Center Dark Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* KPI 1: Tasks on time % */}
-        <div className="p-6 rounded-2xl bg-[#081324] border border-blue-900/50 shadow-sm hover:shadow-md transition-all relative overflow-hidden">
-          <div className="flex items-center justify-between text-xs text-slate-400 font-semibold mb-3">
-            <span>{t.kpiTasksOnTime}</span>
-            <div className="p-2.5 rounded-xl bg-emerald-950/80 text-emerald-400 border border-emerald-800/50">
-              <CheckCircle2 className="w-5 h-5" />
-            </div>
-          </div>
-          <div className="text-3xl lg:text-4xl font-black text-white">{onTimePercentage}%</div>
-          <div className="text-xs text-slate-400 mt-2 flex items-center gap-1.5 font-medium">
-            <span className="text-emerald-400 font-bold">{acceptedOnTimeTasks}</span> / {totalTasks} tapsırma óz waqtında
-          </div>
+      <section className="sc-chart-grid">
+        <div className="sc-panel">
+          <h2>Tapsırmalar dinamikası</h2>
+          <p className="sc-muted">Shomanay rayonı · jıynalma · tapsırma</p>
+          <div className="sc-chart-figure"><strong>{totalTasks}</strong><span>tapsırma<br />jámi</span></div>
+          <AreaChart points={trend} />
         </div>
-
-        {/* KPI 2: Overdue Tasks */}
-        <div className="p-6 rounded-2xl bg-[#081324] border border-blue-900/50 shadow-sm hover:shadow-md transition-all relative overflow-hidden">
-          <div className="flex items-center justify-between text-xs text-slate-400 font-semibold mb-3">
-            <span>{t.kpiOverdueTasks}</span>
-            <div className="p-2.5 rounded-xl bg-red-950/80 text-red-400 border border-red-800/50">
-              <Clock className="w-5 h-5" />
-            </div>
-          </div>
-          <div className={`text-3xl lg:text-4xl font-black ${overdueTasks.length > 0 ? 'text-red-400' : 'text-white'}`}>
-            {overdueTasks.length}
-          </div>
-          <div className="text-xs text-slate-400 mt-2 font-medium">
-            {overdueTasks.length > 0 ? (
-              <span className="text-red-400 font-semibold">Toshkent vaqti boyicha muddati o&apos;tgan</span>
-            ) : (
-              'Keshigiw tirkelmegen'
-            )}
-          </div>
+        <div className="sc-panel">
+          <h2>Tapsırmalar qanday jaǵdayda</h2>
+          <p className="sc-muted">Statuslar boyınsha úlesi</p>
+          <Donut items={donutItems} total={totalTasks} />
         </div>
+      </section>
 
-        {/* KPI 3: Under review tasks */}
-        <div className="p-6 rounded-2xl bg-[#081324] border border-blue-900/50 shadow-sm hover:shadow-md transition-all relative overflow-hidden">
-          <div className="flex items-center justify-between text-xs text-slate-400 font-semibold mb-3">
-            <span>{t.kpiUnderReviewTasks}</span>
-            <div className="p-2.5 rounded-xl bg-amber-950/80 text-amber-400 border border-amber-800/50">
-              <FileCheck className="w-5 h-5" />
-            </div>
-          </div>
-          <div className="text-3xl lg:text-4xl font-black text-white">{underReviewTasks.length}</div>
-          <div className="text-xs text-amber-400 mt-2 font-medium">
-            Dáliller tapsırılǵan, qabıllaw kutilip atır
-          </div>
+      <section className="sc-chart-grid three">
+        <div className="sc-panel">
+          <h2>MPJlar boyınsha aholi</h2>
+          <p className="sc-muted">Shomanay rayonı · adam</p>
+          <HBars items={populationBars} />
         </div>
-
-        {/* KPI 4: Critical Issues */}
-        <div className="p-6 rounded-2xl bg-[#081324] border border-blue-900/50 shadow-sm hover:shadow-md transition-all relative overflow-hidden">
-          <div className="flex items-center justify-between text-xs text-slate-400 font-semibold mb-3">
-            <span>{t.kpiOpenIssues}</span>
-            <div className="p-2.5 rounded-xl bg-rose-950/80 text-rose-400 border border-rose-800/50">
-              <AlertOctagon className="w-5 h-5" />
-            </div>
-          </div>
-          <div className="text-3xl lg:text-4xl font-black text-rose-400">
-            {criticalIssues.length} <span className="text-xs font-semibold text-slate-400">kritikalıq</span>
-          </div>
-          <div className="text-xs text-slate-400 mt-2 font-medium">
-            Jámi: {issues.filter((i) => i.status !== 'resolved').length} ashıq mashqala
-          </div>
+        <div className="sc-panel">
+          <h2>Investiciya bosqıshları</h2>
+          <p className="sc-muted">Joybarlar sanı</p>
+          <Donut items={stageItems} total={investments.length} caption="joybar" />
         </div>
-      </div>
+        <div className="sc-panel">
+          <h2>Mashqalalar kategoriyası</h2>
+          <p className="sc-muted">Barlıq mashqalalar</p>
+          <HBars items={issueBars} />
+        </div>
+      </section>
 
-      {/* Main Spacious Grid: Urgent Issues & Overdue Tasks */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Left: Overdue Tasks & Tasks Under Review */}
-        <div className="p-7 rounded-3xl bg-[#081324] border border-blue-900/50 shadow-sm space-y-5">
-          <div className="flex items-center justify-between border-b border-blue-900/40 pb-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-blue-950 text-cyan-400 border border-blue-800/50">
-                <Clock className="w-5 h-5" />
-              </div>
-              <div>
-                <h2 className="text-base font-extrabold text-white">Qadaǵalawdaǵı Tapsırmalar</h2>
-                <p className="text-xs text-slate-400">Múddetler, ijro dalillari hám tekshiruv navbati</p>
-              </div>
+      <section className="sc-chart-grid">
+        <div className="sc-panel">
+          <h2>Investiciya kólemi (MPJ boyınsha)</h2>
+          <p className="sc-muted">mlrd som</p>
+          <Columns items={costByMfy} color="#2bb5d6" />
+        </div>
+        <div className="sc-panel">
+          <h2>Mashqala basımlılıǵı</h2>
+          <p className="sc-muted">Dárejesi boyınsha úlesi</p>
+          <Donut items={priorityItems} total={issues.length} caption="mashqala" />
+        </div>
+      </section>
+
+      <section className="sc-chart-grid">
+        <div className="sc-panel">
+          <h2>Jaratılatuǵın jumıs orınları</h2>
+          <p className="sc-muted">Investiciya joybarları boyınsha, MPJ kesiminde</p>
+          <Columns items={jobsByMfy} color="#e59a45" />
+        </div>
+        <div className="sc-panel">
+          <h2>Mashqalalar dinamikası</h2>
+          <p className="sc-muted">Jıynalma · mashqala</p>
+          <AreaChart points={cumulativeByMonth(issues.map((x) => x.reportedDate), 8)} color="#e0679c" height={260} />
+        </div>
+      </section>
+
+      <section className="sc-command-grid">
+        <div className="sc-panel">
+          <div className="sc-panel-heading">
+            <div>
+              <div className="sc-eyebrow"><i /> Qadaǵalaw</div>
+              <h2>Qadaǵalawdaǵı tapsırmalar</h2>
             </div>
-            <Link
-              href="/tasks"
-              className="text-xs text-cyan-400 hover:text-cyan-300 flex items-center gap-1 font-bold"
-            >
-              Barlıǵı ({tasks.length}) <ArrowRight className="w-4 h-4" />
-            </Link>
+            <Link href="/tasks" className="sc-text-link">Barlıǵı ({tasks.length}) <ArrowRight size={14} /></Link>
           </div>
 
-          <div className="space-y-4">
-            {tasks.slice(0, 4).map((tsk) => {
-              const isOverdue = tsk.isOverdue;
-              return (
-                <div
-                  key={tsk.id}
-                  className={`p-5 rounded-2xl border transition-all ${
-                    isOverdue
-                      ? 'bg-red-950/20 border-red-800/60 hover:border-red-600'
-                      : tsk.status === 'under_review'
-                      ? 'bg-amber-950/20 border-amber-800/60 hover:border-amber-600'
-                      : 'bg-[#0b1b33] border-blue-900/40 hover:border-blue-700/60'
-                  }`}
-                >
-                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                    <div className="space-y-2 flex-1">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-md bg-[#071324] text-cyan-300 border border-blue-800/50 shadow-2xs">
-                          {tsk.code}
-                        </span>
-                        {isOverdue && (
-                          <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-red-950 text-red-400 border border-red-800 animate-pulse">
-                            MÚDDETI ÓTKEN
-                          </span>
-                        )}
-                        <span
-                          className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase ${
-                            tsk.status === 'accepted'
-                              ? 'bg-emerald-950 text-emerald-400 border border-emerald-800/50'
-                              : tsk.status === 'under_review'
-                              ? 'bg-amber-950 text-amber-400 border border-amber-800/50'
-                              : 'bg-blue-950 text-cyan-300 border border-blue-800/50'
-                          }`}
-                        >
-                          {tsk.status}
-                        </span>
-                      </div>
-
-                      <h3 className="text-sm font-bold text-white leading-snug">{tsk.title}</h3>
-                      <p className="text-xs text-slate-300 line-clamp-2">{tsk.actionDescription}</p>
-
-                      <div className="flex flex-wrap items-center gap-4 pt-1 text-xs text-slate-400">
-                        <span>Orynlawshı: <strong className="text-slate-200">{tsk.mainExecutorOrg}</strong></span>
-                        <span>Múddet: <strong className={isOverdue ? 'text-red-400 font-bold' : 'text-slate-200'}>{new Date(tsk.deadline).toLocaleDateString()}</strong></span>
-                      </div>
-                    </div>
-
-                    <Link
-                      href="/tasks"
-                      className="px-4 py-2 text-xs font-bold text-cyan-300 bg-[#0a1f3d] hover:bg-blue-900 rounded-xl shrink-0 border border-blue-700/50 shadow-2xs transition-colors self-start"
-                    >
-                      Kórip shıǵıw
-                    </Link>
-                  </div>
+          <div className="grid gap-3">
+            {tasks.slice(0, 4).map((task) => (
+              <div key={task.id} className="sc-report-card">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="sc-status" data-tone="accent">{task.code}</span>
+                  <span className="sc-status" data-tone={statusTone(task.status)}><i />{task.status}</span>
+                  {task.isOverdue && <span className="sc-status" data-tone="bad"><i />MÚDDETI ÓTKEN</span>}
                 </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Right: Critical Issues & Bottlenecks */}
-        <div className="p-7 rounded-3xl bg-[#081324] border border-blue-900/50 shadow-sm space-y-5">
-          <div className="flex items-center justify-between border-b border-blue-900/40 pb-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-red-950 text-red-400 border border-red-800/50">
-                <AlertTriangle className="w-5 h-5" />
-              </div>
-              <div>
-                <h2 className="text-base font-extrabold text-white">Kritikalıq Mashqalalar & Riskler</h2>
-                <p className="text-xs text-slate-400">Gaz, elektr, transport va infratuzilma to&apos;siqlari</p>
-              </div>
-            </div>
-            <Link
-              href="/issues"
-              className="text-xs text-cyan-400 hover:text-cyan-300 flex items-center gap-1 font-bold"
-            >
-              Barlıǵı ({issues.length}) <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-
-          <div className="space-y-4">
-            {issues.slice(0, 4).map((iss) => (
-              <div
-                key={iss.id}
-                className="p-5 rounded-2xl bg-[#0b1b33] border border-blue-900/40 hover:border-blue-700/60 transition-all"
-              >
-                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                  <div className="space-y-2 flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-md bg-[#071324] text-cyan-300 border border-blue-800/50 shadow-2xs">
-                        {iss.code}
-                      </span>
-                      <span
-                        className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase ${
-                          iss.priority === 'critical'
-                            ? 'bg-red-950 text-red-400 border border-red-800/50'
-                            : iss.priority === 'high'
-                            ? 'bg-amber-950 text-amber-400 border border-amber-800/50'
-                            : 'bg-slate-800 text-slate-300'
-                        }`}
-                      >
-                        {iss.priority}
-                      </span>
-                      <span className="text-xs text-slate-400">Kategoriya: <strong className="text-slate-200 capitalize">{iss.category}</strong></span>
-                    </div>
-
-                    <h3 className="text-sm font-bold text-white">{iss.title}</h3>
-                    <p className="text-xs text-slate-300 leading-relaxed">{iss.description}</p>
-
-                    {iss.objectName && (
-                      <button
-                        onClick={() => openObjectPassport(iss.objectId!)}
-                        className="text-xs text-cyan-400 hover:underline pt-1 flex items-center gap-1.5 font-semibold"
-                      >
-                        <Building2 className="w-4 h-4 text-cyan-400" />
-                        <span>{iss.objectName} (Pasportti kóriw)</span>
-                      </button>
-                    )}
-                  </div>
-
-                  <Link
-                    href={`/tasks?issueId=${iss.id}`}
-                    className="px-4 py-2 text-xs font-bold text-white bg-[#0a3d8f] hover:bg-blue-800 rounded-xl shrink-0 shadow-sm transition-colors self-start"
-                  >
-                    Tapsırma beriw
-                  </Link>
+                <h3 className="mt-3 text-[15px] font-medium leading-snug">{task.title}</h3>
+                <p className="sc-muted line-clamp-2" style={{ fontSize: 12 }}>{task.actionDescription}</p>
+                <div className="mt-3 flex flex-wrap items-center justify-between gap-3 text-xs text-[#8d9ab2]">
+                  <span>Orınlawshı: <strong className="font-medium text-[#e2e7f2]">{task.mainExecutorOrg}</strong></span>
+                  <span>
+                    Múddet: <strong className={`font-medium ${task.isOverdue ? 'text-[#e7ab91]' : 'text-[#e2e7f2]'}`}>{task.deadline.slice(0, 10).split('-').reverse().join('.')}</strong>
+                  </span>
                 </div>
               </div>
             ))}
           </div>
         </div>
-      </div>
 
-      {/* AI Automated Synthesis & District Diagnostic in Dark Cyber Style (FR-17) */}
-      <div className="p-8 rounded-3xl bg-[#081324] border border-blue-900/50 shadow-sm space-y-5">
-        <div className="flex items-center justify-between border-b border-blue-900/40 pb-4">
-          <div className="flex items-center gap-3">
-            <div className="p-3 rounded-2xl bg-cyan-950 text-cyan-400 border border-cyan-800/50">
-              <Sparkles className="w-6 h-6 text-cyan-400" />
-            </div>
+        <div className="sc-panel">
+          <div className="sc-panel-heading">
             <div>
-              <h2 className="text-lg font-extrabold text-white">
-                AI Analitikalıq Túsindirme & Qarar Qabıllaw Tavsiyası (FR-17)
-              </h2>
-              <p className="text-xs text-slate-400">
-                Statistika, keshigiwler hám infratuzilma datchikleri tiykarında avtomatikalıq tahlil
-              </p>
+              <div className="sc-eyebrow"><i /> Risk</div>
+              <h2>Kritikalıq mashqalalar</h2>
+            </div>
+            <Link href="/issues" className="sc-text-link">Barlıǵı ({issues.length}) <ArrowRight size={14} /></Link>
+          </div>
+
+          <div className="grid gap-3">
+            {issues.slice(0, 4).map((issue) => (
+              <div key={issue.id} className="sc-report-card">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="sc-status" data-tone="accent">{issue.code}</span>
+                  <span className="sc-status" data-tone={priorityTone(issue.priority)}><i />{issue.priority}</span>
+                  <span className="text-xs capitalize text-[#8d9ab2]">{issue.category}</span>
+                </div>
+                <h3 className="mt-3 text-[15px] font-medium leading-snug">{issue.title}</h3>
+                <p className="sc-muted" style={{ fontSize: 12 }}>{issue.description}</p>
+                <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+                  {issue.objectName ? (
+                    <button type="button" onClick={() => openObjectPassport(issue.objectId!)} className="sc-text-link">
+                      <Building2 size={14} /> {issue.objectName}
+                    </button>
+                  ) : <span />}
+                  <Link href={`/tasks?issueId=${issue.id}`} className="sc-text-link">Tapsırma beriw <ArrowRight size={14} /></Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="sc-panel">
+        <div className="sc-panel-heading">
+          <div className="flex items-center gap-4">
+            <span className="sc-icon-tile"><Sparkles size={20} /></span>
+            <div>
+              <div className="sc-eyebrow"><i /> AI analitika</div>
+              <h2>Analitikalıq túsindirme hám qarar qabıllaw usınısı</h2>
             </div>
           </div>
-          <span className="text-xs px-3 py-1 rounded-full bg-cyan-950 text-cyan-300 font-mono font-bold border border-cyan-800/60">
-            Model: Shomanay-LLM-Context
-          </span>
+          <span className="sc-status" data-tone="accent">Model: Shomanay-LLM-Context</span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
-          <div className="p-5 rounded-2xl bg-[#0b1b33] border border-blue-900/40 space-y-2.5">
-            <span className="text-xs font-bold text-red-400 flex items-center gap-1.5">
-              <AlertTriangle className="w-4 h-4" />
-              1. Gaz basımı defitsiti (Diyxanabad)
-            </span>
-            <p className="text-xs text-slate-300 leading-relaxed">
-              Gidroponika issıqxanasında gaz basımınıń 0.8 atm bolıwı 14.2 mlrd somlıq ekin ónimin nobud etiw qáwpin tuwdırmaqta.
-              «Hududgaz» kárxanasına GRS-3 ten montajdı 2-oktyabrge shekem pitkeriw shárt.
-            </p>
-          </div>
-
-          <div className="p-5 rounded-2xl bg-[#0b1b33] border border-blue-900/40 space-y-2.5">
-            <span className="text-xs font-bold text-amber-400 flex items-center gap-1.5">
-              <Clock className="w-4 h-4" />
-              2. KSZ transformator keshigiwi
-            </span>
-            <p className="text-xs text-slate-300 leading-relaxed">
-              1.5 MWt podstanciya qurılısınıń keshigiwi sebepli 3 kárxana iske túsiwi toqtap tur.
-              Dálil tapsırılǵan, ǵárezsiz tekseriwshi M. Torebaev tárepinen qabıllaw tekseriwi talap etiledi.
-            </p>
-          </div>
-
-          <div className="p-5 rounded-2xl bg-[#0b1b33] border border-blue-900/40 space-y-2.5">
-            <span className="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
-              <TrendingUp className="w-4 h-4" />
-              3. Paxta klasteri toqımashılıq kadrları
-            </span>
-            <p className="text-xs text-slate-300 leading-relaxed">
-              40 nafar jaslardı qısqa kurslarda oqıtıw tapsırması tabıslı orınlanıp qabıl etildi.
-              Bul klasterdiń 2-fazası ushın 195 nafar tastıyıqlanǵan jumıs ornın támiyinledi.
-            </p>
-          </div>
+        <div className="grid gap-4 md:grid-cols-3">
+          {[
+            {
+              icon: AlertTriangle, tone: '#e7ab91', title: '1. Gaz basımı defitsiti (Diyxanabad)',
+              text: 'Gidroponika issıqxanasında gaz basımınıń 0.8 atm bolıwı 14.2 mlrd somlıq ekin ónimin nobud etiw qáwpin tuwdırmaqta. «Hududgaz» kárxanasına GRS-3 ten montajdı 2-oktyabrge shekem pitkeriw shárt.',
+            },
+            {
+              icon: Clock, tone: '#e5ba78', title: '2. KSZ transformator keshigiwi',
+              text: '1.5 MWt podstanciya qurılısınıń keshigiwi sebepli 3 kárxana iske túsiwi toqtap tur. Dálil tapsırılǵan, ǵárezsiz tekseriwshi M. Torebaev tárepinen qabıllaw tekseriwi talap etiledi.',
+            },
+            {
+              icon: TrendingUp, tone: '#80dcbc', title: '3. Paxta klasteri toqımashılıq kadrları',
+              text: '40 nafar jaslardı qısqa kurslarda oqıtıw tapsırması tabıslı orınlanıp qabıl etildi. Bul klasterdiń 2-fazası ushın 195 nafar tastıyıqlanǵan jumıs ornın támiyinledi.',
+            },
+          ].map(({ icon: Icon, tone, title, text }) => (
+            <div key={title} className="sc-report-card">
+              <span className="flex items-center gap-2 text-[13px] font-medium" style={{ color: tone }}>
+                <Icon size={15} /> {title}
+              </span>
+              <p className="sc-muted mt-3" style={{ fontSize: 12 }}>{text}</p>
+            </div>
+          ))}
         </div>
-      </div>
+      </section>
     </div>
   );
 };

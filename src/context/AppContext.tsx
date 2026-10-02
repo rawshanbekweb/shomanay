@@ -1,5 +1,6 @@
 'use client';
 import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import type { Language, User, DistrictObject, MFY, Issue, Task, InvestmentProject, IndustrialZone, AuditLogItem, SectorIndicator, TaskEvidence } from '@/types';
 import { translations } from '@/lib/i18n';
 
@@ -21,12 +22,18 @@ interface AppContextType {
 }
 const AppContext = createContext<AppContextType | undefined>(undefined);
 export async function apiRequest<T>(path: string, options?: RequestInit): Promise<T> {
-  const response = await fetch(`/api/${path}`, { ...options, cache: 'no-store', headers: { 'Content-Type': 'application/json', ...options?.headers } });
-  const data = await response.json();
-  if (!response.ok) throw new Error(data.error || `So‘rov bajarilmadi (${response.status}).`);
-  return data as T;
+  // GET so'rovlar Neon "uyqudan" uyg'onayotganda 5xx berishi mumkin — 2 marta qayta uriniladi.
+  const isRead = !options?.method || options.method === 'GET';
+  for (let attempt = 0; ; attempt++) {
+    const response = await fetch(`/api/${path}`, { ...options, cache: 'no-store', headers: { 'Content-Type': 'application/json', ...options?.headers } });
+    const data = await response.json().catch(() => ({}));
+    if (response.ok) return data as T;
+    if (isRead && response.status >= 500 && attempt < 2) { await new Promise((r) => setTimeout(r, 1500 * (attempt + 1))); continue; }
+    throw new Error(data.error || `So‘rov bajarilmadi (${response.status}).`);
+  }
 }
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const isPublicPage = usePathname().startsWith('/login');
   const [language, setLanguageState] = useState<Language>('qq');
   const [currentUser, setCurrentUser] = useState<User>({ id: '', name: '', title: '', role: 'statistician', organization: '' });
   const [objects, setObjects] = useState<DistrictObject[]>([]);
@@ -63,13 +70,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     } finally { setIsLoading(false); }
   }, []);
   useEffect(() => {
+    // Login sahifasida sessiya yo'q — API'ga so'rov yuborilmaydi.
+    if (isPublicPage) return;
     void Promise.resolve().then(refreshData).then(() => {
       try {
         const saved = localStorage.getItem('shm_lang');
         if (saved === 'qq' || saved === 'uz' || saved === 'ru') setLanguageState(saved);
       } catch { /* Storage may be disabled. */ }
     });
-  }, [refreshData]);
+  }, [refreshData, isPublicPage]);
   const setLanguage = (value: Language) => {
     setLanguageState(value);
     try { localStorage.setItem('shm_lang', value); } catch { /* Optional preference. */ }
@@ -100,11 +109,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     reviewTask: (id, accepted, notes) => updateTask(id, { action: 'review', accepted, notes: notes || 'Tekshiruv yakunlandi.' }),
     extendDeadline: (id, deadline, reason) => updateTask(id, { action: 'extend', deadline, reason }),
   }}>
-    <div className="px-4 py-2 text-sm border-b border-slate-700" role="status">
-      {isLoading ? 'Ma‘lumot yuklanmoqda…' : isBackendConnected ? (isDemo ? 'DEMO — namunaviy ma‘lumotlar' : 'Serverga ulangan') : 'Serverga ulanish yo‘q — ma‘lumot yangilanmagan'}
-      {isSaving && <span className="ml-4">Saqlanmoqda…</span>}
-    </div>
-    {error && <div role="alert" className="m-4 p-4 bg-red-950 text-red-100 rounded-xl">{error} <button onClick={() => void refreshData()} className="underline ml-4">Qayta yuklash</button></div>}
     {children}
   </AppContext.Provider>;
 };

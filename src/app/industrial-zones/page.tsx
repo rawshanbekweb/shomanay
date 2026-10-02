@@ -18,8 +18,8 @@ export default function IndustrialZonesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-black text-white flex items-center gap-2.5">
-          <Factory className="w-7 h-7 text-cyan-300" />
+        <h1 className="text-2xl sm:text-3xl font-semibold text-white flex items-center gap-2.5">
+          <Factory className="w-7 h-7 text-violet-300" />
           {t.pageZonesTitle}
         </h1>
         <p className="text-slate-400 text-xs sm:text-sm mt-1">
@@ -38,40 +38,40 @@ export default function IndustrialZonesPage() {
           return (
             <div
               key={zone.id}
-              className="p-8 rounded-3xl bg-[#081324] border border-blue-900/50 shadow-sm space-y-6 hover:shadow-md hover:shadow-blue-900/20 transition-shadow"
+              className="p-8 rounded-3xl bg-[#111620] border border-white/10 shadow-sm space-y-6 hover:shadow-md hover:shadow-violet-900/20 transition-shadow"
             >
               <div className="flex items-start justify-between">
                 <div>
                   <span className="text-xs px-3 py-1 rounded-full bg-amber-950/40 text-amber-400 border border-amber-800/50 font-mono font-bold">
                     {zone.type}
                   </span>
-                  <h2 className="text-xl sm:text-2xl font-black text-white mt-2">{zone.name}</h2>
+                  <h2 className="text-xl sm:text-2xl font-semibold text-white mt-2">{zone.name}</h2>
                   <p className="text-xs sm:text-sm text-slate-400 flex items-center mt-1">
-                    <MapPin className="w-4 h-4 mr-1 text-cyan-400 shrink-0" />
+                    <MapPin className="w-4 h-4 mr-1 text-violet-400 shrink-0" />
                     {mfy?.name}
                   </p>
                 </div>
 
                 <div className="text-right">
                   <div className="text-xs text-slate-400">Belsendi kárxanalar</div>
-                  <div className="text-2xl font-black text-cyan-300">{zone.activeCompaniesCount} kárxana</div>
+                  <div className="text-2xl font-semibold text-violet-300">{zone.activeCompaniesCount} kárxana</div>
                 </div>
               </div>
 
               {/* Area & Jobs */}
               <div className="grid grid-cols-3 gap-4">
-                <div className="p-4 rounded-2xl bg-[#0b1b33] border border-blue-900/50">
+                <div className="p-4 rounded-2xl bg-[#151a26] border border-white/10">
                   <div className="text-xs text-slate-400">Jámi maydan</div>
                   <div className="text-base font-bold text-white mt-1">{zone.totalAreaHa} Ga</div>
                   <div className="text-[11px] text-emerald-400 font-semibold mt-1">{zone.freeAreaHa} Ga bos ({landFreePercent}%)</div>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-[#0b1b33] border border-blue-900/50">
+                <div className="p-4 rounded-2xl bg-[#151a26] border border-white/10">
                   <div className="text-xs text-slate-400">Investiciya</div>
-                  <div className="text-base font-bold text-cyan-300 mt-1">{zone.totalInvestmentMlnUzs.toLocaleString()} mln</div>
+                  <div className="text-base font-bold text-violet-300 mt-1">{zone.totalInvestmentMlnUzs.toLocaleString()} mln</div>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-[#0b1b33] border border-blue-900/50">
+                <div className="p-4 rounded-2xl bg-[#151a26] border border-white/10">
                   <div className="text-xs text-slate-400">Jumıs orınları</div>
                   <div className="text-base font-bold text-white mt-1">{zone.totalJobs} nafar</div>
                 </div>
@@ -85,7 +85,7 @@ export default function IndustrialZonesPage() {
                 </h3>
 
                 {/* Electricity */}
-                <div className="p-4 rounded-2xl bg-[#0b1b33] border border-blue-900/50 space-y-2">
+                <div className="p-4 rounded-2xl bg-[#151a26] border border-white/10 space-y-2">
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-slate-200 font-bold flex items-center gap-2">
                       <Zap className="w-4 h-4 text-amber-500" />
@@ -96,7 +96,7 @@ export default function IndustrialZonesPage() {
                       <strong className="text-emerald-400">{zone.capacities.electricityMwt.free} MWt ({electFreePercent}%)</strong>
                     </span>
                   </div>
-                  <div className="w-full h-3 bg-slate-800 rounded-full overflow-hidden flex">
+                  <div className="w-full h-3 bg-[#1a1f2c] rounded-full overflow-hidden flex">
                     <div
                       style={{ width: `${100 - electFreePercent}%` }}
                       className="bg-amber-500 h-full"
@@ -106,7 +106,7 @@ export default function IndustrialZonesPage() {
                 </div>
 
                 {/* Gas */}
-                <div className="p-4 rounded-2xl bg-[#0b1b33] border border-blue-900/50 space-y-2">
+                <div className="p-4 rounded-2xl bg-[#151a26] border border-white/10 space-y-2">
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-slate-200 font-bold flex items-center gap-2">
                       <Flame className="w-4 h-4 text-red-500" />
@@ -119,7 +119,7 @@ export default function IndustrialZonesPage() {
                       </strong>
                     </span>
                   </div>
-                  <div className="w-full h-3 bg-slate-800 rounded-full overflow-hidden flex">
+                  <div className="w-full h-3 bg-[#1a1f2c] rounded-full overflow-hidden flex">
                     <div
                       style={{ width: `${100 - gasFreePercent}%` }}
                       className={gasFreePercent < 15 ? 'bg-red-500 h-full' : 'bg-amber-500 h-full'}
@@ -129,10 +129,10 @@ export default function IndustrialZonesPage() {
                 </div>
 
                 {/* Water */}
-                <div className="p-4 rounded-2xl bg-[#0b1b33] border border-blue-900/50 space-y-2">
+                <div className="p-4 rounded-2xl bg-[#151a26] border border-white/10 space-y-2">
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-slate-200 font-bold flex items-center gap-2">
-                      <Droplets className="w-4 h-4 text-cyan-500" />
+                      <Droplets className="w-4 h-4 text-violet-400" />
                       Suw támiynatı
                     </span>
                     <span className="text-slate-400">
@@ -140,10 +140,10 @@ export default function IndustrialZonesPage() {
                       <strong className="text-emerald-400">{zone.capacities.waterM3Day.free} m³/kún ({waterFreePercent}%)</strong>
                     </span>
                   </div>
-                  <div className="w-full h-3 bg-slate-800 rounded-full overflow-hidden flex">
+                  <div className="w-full h-3 bg-[#1a1f2c] rounded-full overflow-hidden flex">
                     <div
                       style={{ width: `${100 - waterFreePercent}%` }}
-                      className="bg-cyan-600 h-full"
+                      className="bg-violet-600 h-full"
                     />
                     <div style={{ width: `${waterFreePercent}%` }} className="bg-emerald-600 h-full" />
                   </div>
@@ -151,7 +151,7 @@ export default function IndustrialZonesPage() {
               </div>
 
               {/* Infrastructure Readiness Icons */}
-              <div className="pt-3 border-t border-blue-900/40 flex items-center justify-between text-xs text-slate-400 font-medium">
+              <div className="pt-3 border-t border-white/10 flex items-center justify-between text-xs text-slate-400 font-medium">
                 <div className="flex items-center gap-1.5">
                   {zone.capacities.asphaltRoad ? <CheckCircle2 className="w-4 h-4 text-emerald-500" /> : <XCircle className="w-4 h-4 text-slate-500" />}
                   <span>Asfalt jol</span>

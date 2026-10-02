@@ -157,11 +157,11 @@ export default function TasksPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl sm:text-3xl font-black text-white flex items-center gap-2.5">
-              <CheckSquare className="w-7 h-7 text-cyan-300" />
+            <h1 className="text-2xl sm:text-3xl font-semibold text-white flex items-center gap-2.5">
+              <CheckSquare className="w-7 h-7 text-violet-300" />
               {t.pageTasksTitle}
             </h1>
-            <span className="text-xs px-3 py-1 rounded-full bg-blue-950 text-cyan-300 font-bold border border-blue-800/50">
+            <span className="text-xs px-3 py-1 rounded-full bg-violet-500/10 text-violet-300 font-bold border border-white/10">
               {tasks.length} {t.tabAllTasks}
             </span>
           </div>
@@ -173,7 +173,7 @@ export default function TasksPage() {
         <button
                 disabled={isSaving || !['admin', 'hokim', 'coordinator'].includes(currentUser.role)}
           onClick={() => setCreateModalOpen(true)}
-          className="px-5 py-3 rounded-2xl bg-cyan-300 hover:bg-blue-800 text-white text-xs font-bold shadow-md shadow-blue-900/10 transition-all flex items-center gap-2 self-start sm:self-auto"
+          className="px-5 py-3 rounded-2xl bg-[#6d57d6] hover:bg-[#7a63e6] text-white text-xs font-bold shadow-md shadow-violet-900/10 transition-all flex items-center gap-2 self-start sm:self-auto"
         >
           <PlusCircle className="w-4 h-4" />
           <span>{t.btnCreateTask}</span>
@@ -181,7 +181,7 @@ export default function TasksPage() {
       </div>
 
       {/* Filters bar in Crisp White */}
-      <div className="p-5 rounded-3xl bg-[#081324] border border-blue-900/50 shadow-sm flex flex-wrap items-center justify-between gap-4">
+      <div className="p-5 rounded-3xl bg-[#111620] border border-white/10 shadow-sm flex flex-wrap items-center justify-between gap-4">
         <div className="flex flex-wrap items-center gap-3 flex-1 min-w-[280px]">
           {/* Search */}
           <div className="relative flex-1 min-w-[220px]">
@@ -191,7 +191,7 @@ export default function TasksPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t.searchTaskPlaceholder}
-              className="w-full pl-10 pr-4 py-2.5 text-xs rounded-xl bg-[#0b1b33] border border-blue-900/50 text-white placeholder-slate-400 focus:outline-none focus:border-cyan-300 focus:bg-[#081324] transition-all"
+              className="w-full pl-10 pr-4 py-2.5 text-xs rounded-xl bg-[#151a26] border border-white/10 text-white placeholder-slate-400 focus:outline-none focus:border-violet-300 focus:bg-[#111620] transition-all"
             />
           </div>
 
@@ -199,7 +199,7 @@ export default function TasksPage() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3.5 py-2.5 text-xs rounded-xl bg-[#0b1b33] border border-blue-900/50 text-slate-200 focus:outline-none focus:border-cyan-300"
+            className="px-3.5 py-2.5 text-xs rounded-xl bg-[#151a26] border border-white/10 text-slate-200 focus:outline-none focus:border-violet-300"
           >
             <option value="all">Barlıq statuslar</option>
             <option value="assigned">Tapsırıldı (Assigned)</option>
@@ -213,7 +213,7 @@ export default function TasksPage() {
           <select
             value={priorityFilter}
             onChange={(e) => setPriorityFilter(e.target.value)}
-            className="px-3.5 py-2.5 text-xs rounded-xl bg-[#0b1b33] border border-blue-900/50 text-slate-200 focus:outline-none focus:border-cyan-300"
+            className="px-3.5 py-2.5 text-xs rounded-xl bg-[#151a26] border border-white/10 text-slate-200 focus:outline-none focus:border-violet-300"
           >
             <option value="all">Barlıq áhmiyet</option>
             <option value="critical">Kritikalıq</option>
@@ -238,7 +238,7 @@ export default function TasksPage() {
       {/* Tasks Cards List */}
       <div className="space-y-4">
         {filteredTasks.length === 0 ? (
-          <div className="p-12 text-center rounded-3xl bg-[#081324] border border-blue-900/50 text-slate-400 text-sm">
+          <div className="p-12 text-center rounded-3xl bg-[#111620] border border-white/10 text-slate-400 text-sm">
             Tapsırma tabılmadı.
           </div>
         ) : (
@@ -249,18 +249,18 @@ export default function TasksPage() {
                 key={tsk.id}
                 className={`p-6 rounded-3xl border transition-all ${
                   isOverdue
-                    ? 'bg-[#081324] border-red-300 shadow-md'
+                    ? 'bg-[#111620] border-red-300 shadow-md'
                     : tsk.status === 'under_review'
-                    ? 'bg-[#081324] border-amber-300 shadow-md'
+                    ? 'bg-[#111620] border-amber-300 shadow-md'
                     : tsk.status === 'accepted'
-                    ? 'bg-[#081324] border-emerald-800/50 shadow-sm'
-                    : 'bg-[#081324] border-blue-900/50 hover:border-slate-300 shadow-sm'
+                    ? 'bg-[#111620] border-emerald-800/50 shadow-sm'
+                    : 'bg-[#111620] border-white/10 hover:border-slate-300 shadow-sm'
                 }`}
               >
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
                   <div className="space-y-2.5 flex-1">
                     <div className="flex flex-wrap items-center gap-2.5">
-                      <span className="text-xs font-mono font-bold px-3 py-1 rounded-md bg-[#0b1b33] text-slate-200 border border-blue-900/50">
+                      <span className="text-xs font-mono font-bold px-3 py-1 rounded-md bg-[#151a26] text-slate-200 border border-white/10">
                         {tsk.code}
                       </span>
                       <span
@@ -271,7 +271,7 @@ export default function TasksPage() {
                             ? 'bg-amber-950/40 text-amber-400 border border-amber-800/50'
                             : tsk.status === 'returned_for_revision'
                             ? 'bg-red-950/40 text-red-400 border border-red-800/50'
-                            : 'bg-blue-950 text-cyan-300 border border-blue-800/50'
+                            : 'bg-violet-500/10 text-violet-300 border border-white/10'
                         }`}
                       >
                         {tsk.status}
@@ -290,7 +290,7 @@ export default function TasksPage() {
                             ? 'bg-red-950/40 text-red-400 border border-red-800/50'
                             : tsk.priority === 'high'
                             ? 'bg-amber-950/40 text-amber-400 border border-amber-800/50'
-                            : 'bg-[#0b1b33] text-slate-200'
+                            : 'bg-[#151a26] text-slate-200'
                         }`}
                       >
                         {tsk.priority.toUpperCase()}
@@ -303,7 +303,7 @@ export default function TasksPage() {
                     {/* Metadata line */}
                     <div className="flex flex-wrap items-center gap-5 text-xs text-slate-400 pt-1">
                       <div className="flex items-center gap-1.5">
-                        <User className="w-4 h-4 text-cyan-300" />
+                        <User className="w-4 h-4 text-violet-300" />
                         <span>Orynlawshı: <strong className="text-slate-200">{tsk.mainExecutorOrg}</strong></span>
                       </div>
                       <div className="flex items-center gap-1.5">
@@ -321,7 +321,7 @@ export default function TasksPage() {
                         <button
                 disabled={isSaving}
                           onClick={() => openObjectPassport(tsk.objectId!)}
-                          className="flex items-center gap-1.5 text-cyan-300 hover:underline font-semibold"
+                          className="flex items-center gap-1.5 text-violet-300 hover:underline font-semibold"
                         >
                           <Building2 className="w-4 h-4" />
                           <span>{tsk.objectName}</span>
@@ -331,7 +331,7 @@ export default function TasksPage() {
 
                     {/* Evidence & Review Notes preview */}
                     {tsk.evidence && (
-                      <div className="mt-3 p-4 rounded-2xl bg-[#0b1b33] border border-blue-900/50 flex flex-wrap items-center justify-between gap-3 text-xs">
+                      <div className="mt-3 p-4 rounded-2xl bg-[#151a26] border border-white/10 flex flex-wrap items-center justify-between gap-3 text-xs">
                         <div className="space-y-1">
                           <div className="text-slate-200 font-bold flex items-center gap-2">
                             <Upload className="w-4 h-4 text-emerald-600" />
@@ -349,7 +349,7 @@ export default function TasksPage() {
                             <Image unoptimized width={800} height={600}
                               src={tsk.evidence.photos[0]}
                               alt="Dalil"
-                              className="w-14 h-11 rounded-xl object-cover border border-blue-900/50 shadow-xs"
+                              className="w-14 h-11 rounded-xl object-cover border border-white/10 shadow-xs"
                             />
                             <span className="text-[11px] text-slate-400 font-medium">({tsk.evidence.documents[0]?.name || 'Hújjet'})</span>
                           </div>
@@ -367,12 +367,12 @@ export default function TasksPage() {
                   </div>
 
                   {/* Actions Column in State Blue */}
-                  <div className="flex flex-wrap lg:flex-col items-center lg:items-end gap-2.5 shrink-0 pt-3 lg:pt-0 border-t lg:border-t-0 border-blue-900/40">
+                  <div className="flex flex-wrap lg:flex-col items-center lg:items-end gap-2.5 shrink-0 pt-3 lg:pt-0 border-t lg:border-t-0 border-white/10">
                     {tsk.status === 'assigned' && currentUser.role === 'organization' && currentUser.organization === tsk.mainExecutorOrg && (
                       <button
                 disabled={isSaving}
                         onClick={() => startTask(tsk.id)}
-                        className="px-4 py-2 rounded-xl bg-cyan-300 hover:bg-blue-800 text-white text-xs font-bold shadow-sm transition-colors"
+                        className="px-4 py-2 rounded-xl bg-[#6d57d6] hover:bg-[#7a63e6] text-white text-xs font-bold shadow-sm transition-colors"
                       >
                         Jumıstı baslaw (In Progress)
                       </button>
@@ -407,7 +407,7 @@ export default function TasksPage() {
                       <button
                 disabled={isSaving}
                         onClick={() => setExtendModalTask(tsk)}
-                        className="px-4 py-2 rounded-xl bg-[#0b1b33] hover:bg-slate-800/60 text-slate-200 text-xs font-semibold border border-blue-900/50 transition-colors"
+                        className="px-4 py-2 rounded-xl bg-[#151a26] hover:bg-[#1a1f2c]/60 text-slate-200 text-xs font-semibold border border-white/10 transition-colors"
                       >
                         Múddetti uzaytıw
                       </button>
@@ -422,16 +422,16 @@ export default function TasksPage() {
 
       {/* Modal: Create Task */}
       {createModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in">
-          <div className="bg-[#081324] border border-blue-900/50 rounded-3xl w-full max-w-xl p-8 shadow-2xl space-y-5">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#111620]/60 backdrop-blur-xs animate-in fade-in">
+          <div className="bg-[#111620] border border-white/10 rounded-3xl w-full max-w-xl p-8 shadow-2xl space-y-5">
             <h2 className="text-xl font-bold text-white flex items-center gap-2">
-              <PlusCircle className="w-6 h-6 text-cyan-300" />
+              <PlusCircle className="w-6 h-6 text-violet-300" />
               Jańa Tapsırma Belgilew (FR-05)
             </h2>
             <form onSubmit={handleCreateTask} className="space-y-4">
               {error && <p role="alert" className="p-3 bg-red-950 text-red-100 rounded-xl">{error}</p>}
               <label className="block text-xs font-bold text-slate-200">MFY
-                <select required aria-label="Topshiriq MFY" value={objects.find(object => object.id === newTaskObjectId)?.mfyId || newTaskMfyId} disabled={Boolean(newTaskObjectId)} onChange={e => setNewTaskMfyId(e.target.value)} className="block w-full p-3 mt-1 bg-slate-900 border border-slate-600 rounded-xl">
+                <select required aria-label="Topshiriq MFY" value={objects.find(object => object.id === newTaskObjectId)?.mfyId || newTaskMfyId} disabled={Boolean(newTaskObjectId)} onChange={e => setNewTaskMfyId(e.target.value)} className="block w-full p-3 mt-1 bg-[#111620] border border-white/10 rounded-xl">
                   <option value="">MFYni tanlang</option>{mfys.map(mfy => <option key={mfy.id} value={mfy.id}>{mfy.name}</option>)}
                 </select>
               </label>
@@ -443,7 +443,7 @@ export default function TasksPage() {
                   value={newTaskTitle}
                   onChange={(e) => setNewTaskTitle(e.target.value)}
                   placeholder="Mısalı: Diyxanabad issıqxanasına jańa gaz liniyasın tartıw"
-                  className="w-full mt-1 px-4 py-2.5 text-xs rounded-xl bg-[#0b1b33] border border-blue-900/50 text-white focus:bg-[#081324] focus:border-cyan-300"
+                  className="w-full mt-1 px-4 py-2.5 text-xs rounded-xl bg-[#151a26] border border-white/10 text-white focus:bg-[#111620] focus:border-violet-300"
                 />
               </div>
 
@@ -455,19 +455,19 @@ export default function TasksPage() {
                   value={newTaskDesc}
                   onChange={(e) => setNewTaskDesc(e.target.value)}
                   placeholder="Kerekli texnika, materiallar hám orınlaw boyınsha talaplar..."
-                  className="w-full mt-1 px-4 py-2.5 text-xs rounded-xl bg-[#0b1b33] border border-blue-900/50 text-white focus:bg-[#081324] focus:border-cyan-300"
+                  className="w-full mt-1 px-4 py-2.5 text-xs rounded-xl bg-[#151a26] border border-white/10 text-white focus:bg-[#111620] focus:border-violet-300"
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="text-xs font-bold text-slate-200">Tiykarǵı Orynlawshı Shólkem</label>
-                  <input required aria-label="newTaskExecutor" value={newTaskExecutor} onChange={e => setNewTaskExecutor(e.target.value)} className="w-full mt-1 p-3 text-xs rounded-xl bg-slate-900 border border-slate-600" />
+                  <input required aria-label="newTaskExecutor" value={newTaskExecutor} onChange={e => setNewTaskExecutor(e.target.value)} className="w-full mt-1 p-3 text-xs rounded-xl bg-[#111620] border border-white/10" />
                 </div>
 
                 <div>
                   <label className="text-xs font-bold text-slate-200">Ǵárezsiz Tekseriwshi</label>
-                  <input required aria-label="newTaskInspector" value={newTaskInspector} onChange={e => setNewTaskInspector(e.target.value)} className="w-full mt-1 p-3 text-xs rounded-xl bg-slate-900 border border-slate-600" />
+                  <input required aria-label="newTaskInspector" value={newTaskInspector} onChange={e => setNewTaskInspector(e.target.value)} className="w-full mt-1 p-3 text-xs rounded-xl bg-[#111620] border border-white/10" />
                 </div>
               </div>
 
@@ -479,7 +479,7 @@ export default function TasksPage() {
                     required
                     value={newTaskDeadline}
                     onChange={(e) => setNewTaskDeadline(e.target.value)}
-                    className="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-[#0b1b33] border border-blue-900/50 text-white"
+                    className="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-[#151a26] border border-white/10 text-white"
                   />
                 </div>
 
@@ -488,7 +488,7 @@ export default function TasksPage() {
                   <select
                     value={newTaskObjectId}
                     onChange={(e) => setNewTaskObjectId(e.target.value)}
-                    className="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-[#0b1b33] border border-blue-900/50 text-white"
+                    className="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-[#151a26] border border-white/10 text-white"
                   >
                     <option value="">Obyekt biriktirilmesin</option>
                     {objects.map((o) => (
@@ -500,7 +500,7 @@ export default function TasksPage() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-end space-x-3 pt-3 border-t border-blue-900/40">
+              <div className="flex items-center justify-end space-x-3 pt-3 border-t border-white/10">
                 <button
                 disabled={isSaving}
                   type="button"
@@ -512,7 +512,7 @@ export default function TasksPage() {
                 <button
                 disabled={isSaving}
                   type="submit"
-                  className="px-5 py-2.5 text-xs font-bold text-white bg-cyan-300 hover:bg-blue-800 rounded-xl shadow-sm"
+                  className="px-5 py-2.5 text-xs font-bold text-white bg-[#6d57d6] hover:bg-[#7a63e6] rounded-xl shadow-sm"
                 >
                   Tapsırma qosıw
                 </button>
@@ -524,8 +524,8 @@ export default function TasksPage() {
 
       {/* Modal: Submit Evidence */}
       {evidenceModalTask && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in">
-          <div className="bg-[#081324] border border-blue-900/50 rounded-3xl w-full max-w-lg p-8 shadow-2xl space-y-5">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#111620]/60 backdrop-blur-xs animate-in fade-in">
+          <div className="bg-[#111620] border border-white/10 rounded-3xl w-full max-w-lg p-8 shadow-2xl space-y-5">
             <h2 className="text-xl font-bold text-white flex items-center gap-2">
               <Upload className="w-6 h-6 text-amber-600" />
               Orınlanǵanlıq Dálilin Tapsırıw (FR-07)
@@ -544,7 +544,7 @@ export default function TasksPage() {
                   value={evidenceComment}
                   onChange={(e) => setEvidenceComment(e.target.value)}
                   placeholder="Qanday jumıslar pitkerildi, qashan sınaqtan ótti..."
-                  className="w-full mt-1 px-4 py-2.5 text-xs rounded-xl bg-[#0b1b33] border border-blue-900/50 text-white focus:bg-[#081324]"
+                  className="w-full mt-1 px-4 py-2.5 text-xs rounded-xl bg-[#151a26] border border-white/10 text-white focus:bg-[#111620]"
                 />
               </div>
 
@@ -557,7 +557,7 @@ export default function TasksPage() {
                     value={evidenceNumeric}
                     onChange={(e) => setEvidenceNumeric(e.target.value)}
                     placeholder="Mısalı: 2.2"
-                    className="w-full mt-1 px-4 py-2.5 text-xs rounded-xl bg-[#0b1b33] border border-blue-900/50 text-white"
+                    className="w-full mt-1 px-4 py-2.5 text-xs rounded-xl bg-[#151a26] border border-white/10 text-white"
                   />
                 </div>
                 <div>
@@ -567,7 +567,7 @@ export default function TasksPage() {
                     value={evidenceUnit}
                     onChange={(e) => setEvidenceUnit(e.target.value)}
                     placeholder="atm, MWt, km..."
-                    className="w-full mt-1 px-4 py-2.5 text-xs rounded-xl bg-[#0b1b33] border border-blue-900/50 text-white"
+                    className="w-full mt-1 px-4 py-2.5 text-xs rounded-xl bg-[#151a26] border border-white/10 text-white"
                   />
                 </div>
               </div>
@@ -578,7 +578,7 @@ export default function TasksPage() {
                   type="text"
                   value={evidencePhotoUrl}
                   onChange={(e) => setEvidencePhotoUrl(e.target.value)}
-                  className="w-full mt-1 px-4 py-2.5 text-xs rounded-xl bg-[#0b1b33] border border-blue-900/50 text-white font-mono text-[11px]"
+                  className="w-full mt-1 px-4 py-2.5 text-xs rounded-xl bg-[#151a26] border border-white/10 text-white font-mono text-[11px]"
                 />
               </div>
 
@@ -590,11 +590,11 @@ export default function TasksPage() {
                   aria-describedby="document-note"
                   value={evidenceDocName}
                   onChange={(e) => setEvidenceDocName(e.target.value)}
-                  className="w-full mt-1 px-4 py-2.5 text-xs rounded-xl bg-[#0b1b33] border border-blue-900/50 text-white"
+                  className="w-full mt-1 px-4 py-2.5 text-xs rounded-xl bg-[#151a26] border border-white/10 text-white"
                 />
               </div>
 
-              <div className="flex items-center justify-end space-x-3 pt-3 border-t border-blue-900/40">
+              <div className="flex items-center justify-end space-x-3 pt-3 border-t border-white/10">
                 <button
                 disabled={isSaving}
                   type="button"
@@ -618,8 +618,8 @@ export default function TasksPage() {
 
       {/* Modal: Review & Accept Task */}
       {reviewModalTask && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in">
-          <div className="bg-[#081324] border border-blue-900/50 rounded-3xl w-full max-w-lg p-8 shadow-2xl space-y-5">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#111620]/60 backdrop-blur-xs animate-in fade-in">
+          <div className="bg-[#111620] border border-white/10 rounded-3xl w-full max-w-lg p-8 shadow-2xl space-y-5">
             <h2 className="text-xl font-bold text-white flex items-center gap-2">
               <ShieldCheck className="w-6 h-6 text-emerald-600" />
               Ǵárezsiz Tekseriw & Qabıllaw (FR-05, FR-07)
@@ -635,7 +635,7 @@ export default function TasksPage() {
               </div>
             )}
 
-            <div className="p-4 rounded-2xl bg-[#0b1b33] border border-blue-900/50 text-xs space-y-1.5">
+            <div className="p-4 rounded-2xl bg-[#151a26] border border-white/10 text-xs space-y-1.5">
               <div className="text-slate-300">
                 Házirgi avtorizaciyadan ótken paydalanıwshı: <strong className="text-white">{currentUser.name}</strong> ({currentUser.title})
               </div>
@@ -657,11 +657,11 @@ export default function TasksPage() {
                 value={reviewNotes}
                 onChange={(e) => setReviewNotes(e.target.value)}
                 placeholder="Dálil boyınsha dálalatnama tekserildi, obyekttegi gaz/elektr parametrleri sáykes..."
-                className="w-full mt-1 px-4 py-2.5 text-xs rounded-xl bg-[#0b1b33] border border-blue-900/50 text-white focus:bg-[#081324]"
+                className="w-full mt-1 px-4 py-2.5 text-xs rounded-xl bg-[#151a26] border border-white/10 text-white focus:bg-[#111620]"
               />
             </div>
 
-            <div className="flex items-center justify-between pt-3 border-t border-blue-900/40">
+            <div className="flex items-center justify-between pt-3 border-t border-white/10">
               <button
                 disabled={isSaving}
                 type="button"
@@ -695,10 +695,10 @@ export default function TasksPage() {
 
       {/* Modal: Extend Deadline */}
       {extendModalTask && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in">
-          <div className="bg-[#081324] border border-blue-900/50 rounded-3xl w-full max-w-md p-8 shadow-2xl space-y-5">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#111620]/60 backdrop-blur-xs animate-in fade-in">
+          <div className="bg-[#111620] border border-white/10 rounded-3xl w-full max-w-md p-8 shadow-2xl space-y-5">
             <h2 className="text-xl font-bold text-white flex items-center gap-2">
-              <Clock className="w-6 h-6 text-cyan-300" />
+              <Clock className="w-6 h-6 text-violet-300" />
               Múddetti Uzaytıw (FR-06)
             </h2>
             <p className="text-xs text-slate-300">
@@ -714,7 +714,7 @@ export default function TasksPage() {
                   required
                   value={newDeadlineDate}
                   onChange={(e) => setNewDeadlineDate(e.target.value)}
-                  className="w-full mt-1 px-4 py-2.5 text-xs rounded-xl bg-[#0b1b33] border border-blue-900/50 text-white"
+                  className="w-full mt-1 px-4 py-2.5 text-xs rounded-xl bg-[#151a26] border border-white/10 text-white"
                 />
               </div>
 
@@ -726,11 +726,11 @@ export default function TasksPage() {
                   value={extendReason}
                   onChange={(e) => setExtendReason(e.target.value)}
                   placeholder="Kabel materialları jetkerip beriliwi keshikkenligi sebepli..."
-                  className="w-full mt-1 px-4 py-2.5 text-xs rounded-xl bg-[#0b1b33] border border-blue-900/50 text-white"
+                  className="w-full mt-1 px-4 py-2.5 text-xs rounded-xl bg-[#151a26] border border-white/10 text-white"
                 />
               </div>
 
-              <div className="flex items-center justify-end space-x-3 pt-3 border-t border-blue-900/40">
+              <div className="flex items-center justify-end space-x-3 pt-3 border-t border-white/10">
                 <button
                 disabled={isSaving}
                   type="button"
@@ -742,7 +742,7 @@ export default function TasksPage() {
                 <button
                 disabled={isSaving}
                   type="submit"
-                  className="px-5 py-2.5 text-xs font-bold text-white bg-cyan-300 hover:bg-blue-800 rounded-xl"
+                  className="px-5 py-2.5 text-xs font-bold text-white bg-[#6d57d6] hover:bg-[#7a63e6] rounded-xl"
                 >
                   Múddetti saqlaw
                 </button>

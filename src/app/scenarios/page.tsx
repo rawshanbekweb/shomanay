@@ -56,8 +56,8 @@ export default function ScenariosPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white flex items-center gap-2.5">
-            <BarChart3 className="w-7 h-7 text-cyan-300" />
+          <h1 className="text-2xl sm:text-3xl font-semibold text-white flex items-center gap-2.5">
+            <BarChart3 className="w-7 h-7 text-violet-300" />
             {t.scenarioTitle}
           </h1>
           <p className="text-slate-400 text-xs sm:text-sm mt-1">
@@ -67,19 +67,19 @@ export default function ScenariosPage() {
 
         <button
           onClick={handleReset}
-          className="px-4 py-2.5 rounded-2xl bg-[#081324] hover:bg-slate-800/60 text-slate-200 text-xs font-bold border border-blue-900/50 shadow-2xs transition-colors flex items-center gap-1.5 self-start sm:self-auto"
+          className="px-4 py-2.5 rounded-2xl bg-[#111620] hover:bg-[#1a1f2c]/60 text-slate-200 text-xs font-bold border border-white/10 shadow-2xs transition-colors flex items-center gap-1.5 self-start sm:self-auto"
         >
-          <RotateCcw className="w-4 h-4 text-cyan-400" />
+          <RotateCcw className="w-4 h-4 text-violet-400" />
           <span>Boshlang&apos;ich parametrlar</span>
         </button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left: Interactive Controls in Crisp White (5 cols) */}
-        <div className="lg:col-span-5 p-8 rounded-3xl bg-[#081324] border border-blue-900/50 shadow-sm space-y-6">
-          <div className="flex items-center gap-2.5 border-b border-blue-900/40 pb-4">
-            <Cpu className="w-5 h-5 text-cyan-300" />
-            <h2 className="text-sm font-black text-white uppercase tracking-wider">
+        <div className="lg:col-span-5 p-8 rounded-3xl bg-[#111620] border border-white/10 shadow-sm space-y-6">
+          <div className="flex items-center gap-2.5 border-b border-white/10 pb-4">
+            <Cpu className="w-5 h-5 text-violet-300" />
+            <h2 className="text-sm font-semibold text-white uppercase tracking-wider">
               Ssenariy Parametrleri
             </h2>
           </div>
@@ -88,7 +88,7 @@ export default function ScenariosPage() {
           <div className="space-y-2">
             <div className="flex justify-between items-center text-xs">
               <span className="text-slate-200 font-bold">{t.investGrowthLabel}</span>
-              <span className="text-cyan-300 font-mono font-black text-sm">
+              <span className="text-violet-300 font-mono font-semibold text-sm">
                 {investGrowth > 0 ? `+${investGrowth}%` : `${investGrowth}%`}
               </span>
             </div>
@@ -99,7 +99,7 @@ export default function ScenariosPage() {
               step="1"
               value={investGrowth}
               onChange={(e) => setInvestGrowth(parseInt(e.target.value))}
-              className="w-full accent-cyan-300 cursor-pointer"
+              className="w-full accent-violet-300 cursor-pointer"
             />
             <div className="flex justify-between text-[11px] text-slate-400">
               <span>-20% (qısqarıw)</span>
@@ -112,7 +112,7 @@ export default function ScenariosPage() {
           <div className="space-y-2">
             <div className="flex justify-between items-center text-xs">
               <span className="text-slate-200 font-bold">{t.newProjectsCountLabel}</span>
-              <span className="text-emerald-400 font-mono font-black text-sm">
+              <span className="text-emerald-400 font-mono font-semibold text-sm">
                 {newProjectsCount} joybar
               </span>
             </div>
@@ -133,10 +133,10 @@ export default function ScenariosPage() {
           </div>
 
           {/* Slider 3: Available Power Limit */}
-          <div className="space-y-2 pt-3 border-t border-blue-900/40">
+          <div className="space-y-2 pt-3 border-t border-white/10">
             <div className="flex justify-between items-center text-xs">
               <span className="text-slate-200 font-bold">{t.electricityCapLabel}</span>
-              <span className="text-amber-400 font-mono font-black text-sm">
+              <span className="text-amber-400 font-mono font-semibold text-sm">
                 {powerLimitMwt} MWt
               </span>
             </div>
@@ -155,7 +155,7 @@ export default function ScenariosPage() {
           <div className="space-y-2">
             <div className="flex justify-between items-center text-xs">
               <span className="text-slate-200 font-bold">{t.gasCapLabel}</span>
-              <span className="text-red-400 font-mono font-black text-sm">
+              <span className="text-red-400 font-mono font-semibold text-sm">
                 {gasLimitM3h} m³/saat
               </span>
             </div>
@@ -171,11 +171,11 @@ export default function ScenariosPage() {
           </div>
 
           {/* Elasticity Reference Table */}
-          <div className="p-4 rounded-2xl bg-[#0b1b33] border border-blue-900/50 text-xs space-y-2">
+          <div className="p-4 rounded-2xl bg-[#151a26] border border-white/10 text-xs space-y-2">
             <span className="font-bold text-slate-200 block">Metodikalıq Bog‘liqlik Koeffitsientleri:</span>
             <div className="flex justify-between text-slate-300">
               <span>Sanoat ishlab chiqarishi:</span>
-              <span className="font-mono font-bold text-cyan-300">+0.70</span>
+              <span className="font-mono font-bold text-violet-300">+0.70</span>
             </div>
             <div className="flex justify-between text-slate-300">
               <span>Bandlik va ish o&apos;rinlari:</span>
@@ -183,7 +183,7 @@ export default function ScenariosPage() {
             </div>
             <div className="flex justify-between text-slate-300">
               <span>Aholi real daromadlari:</span>
-              <span className="font-mono font-bold text-blue-700">+0.65</span>
+              <span className="font-mono font-bold text-violet-400">+0.65</span>
             </div>
             <div className="flex justify-between text-slate-300">
               <span>Mahalliy byudjet soliqlari:</span>
@@ -194,34 +194,34 @@ export default function ScenariosPage() {
 
         {/* Right: Calculated Impact & Bottleneck Analysis (7 cols) */}
         <div className="lg:col-span-7 space-y-6">
-          <div className="p-8 rounded-3xl bg-[#081324] border border-blue-900/50 shadow-sm space-y-6">
-            <div className="flex items-center justify-between border-b border-blue-900/40 pb-4">
-              <h2 className="text-sm font-black text-white uppercase tracking-wider flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-cyan-300" />
+          <div className="p-8 rounded-3xl bg-[#111620] border border-white/10 shadow-sm space-y-6">
+            <div className="flex items-center justify-between border-b border-white/10 pb-4">
+              <h2 className="text-sm font-semibold text-white uppercase tracking-wider flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-violet-300" />
                 {t.impactResultsTitle}
               </h2>
-              <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-blue-950/40 text-cyan-300 border border-blue-800/50">
+              <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-violet-500/10 text-violet-300 border border-white/10">
                 Prognoz: 2026-2027
               </span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Industry Result */}
-              <div className="p-5 rounded-2xl bg-[#0b1b33] border border-blue-900/50 space-y-1.5">
+              <div className="p-5 rounded-2xl bg-[#151a26] border border-white/10 space-y-1.5">
                 <span className="text-xs text-slate-400 font-medium">{t.impactIndustry}</span>
-                <div className="text-2xl font-black text-white">
+                <div className="text-2xl font-semibold text-white">
                   {(newIndustryVolume / 1000).toFixed(1)} mlrd som
                 </div>
-                <div className="text-xs font-bold text-cyan-300 flex items-center gap-1">
+                <div className="text-xs font-bold text-violet-300 flex items-center gap-1">
                   <TrendingUp className="w-3.5 h-3.5" />
                   {industryDeltaPercent > 0 ? `+${industryDeltaPercent.toFixed(1)}%` : `${industryDeltaPercent.toFixed(1)}%`} ósim
                 </div>
               </div>
 
               {/* Jobs Result */}
-              <div className="p-5 rounded-2xl bg-[#0b1b33] border border-blue-900/50 space-y-1.5">
+              <div className="p-5 rounded-2xl bg-[#151a26] border border-white/10 space-y-1.5">
                 <span className="text-xs text-slate-400 font-medium">{t.impactEmployment}</span>
-                <div className="text-2xl font-black text-emerald-400">
+                <div className="text-2xl font-semibold text-emerald-400">
                   +{newJobsCreated.toLocaleString()} nafar
                 </div>
                 <div className="text-xs text-slate-400 font-medium">
@@ -230,21 +230,21 @@ export default function ScenariosPage() {
               </div>
 
               {/* Retail Result */}
-              <div className="p-5 rounded-2xl bg-[#0b1b33] border border-blue-900/50 space-y-1.5">
+              <div className="p-5 rounded-2xl bg-[#151a26] border border-white/10 space-y-1.5">
                 <span className="text-xs text-slate-400 font-medium">{t.impactRetail}</span>
-                <div className="text-2xl font-black text-white">
+                <div className="text-2xl font-semibold text-white">
                   {(newRetailVolume / 1000).toFixed(1)} mlrd som
                 </div>
-                <div className="text-xs font-bold text-blue-700 flex items-center gap-1">
+                <div className="text-xs font-bold text-violet-400 flex items-center gap-1">
                   <TrendingUp className="w-3.5 h-3.5" />
                   +{retailDeltaPercent.toFixed(1)}% aylanba
                 </div>
               </div>
 
               {/* Taxes Result */}
-              <div className="p-5 rounded-2xl bg-[#0b1b33] border border-blue-900/50 space-y-1.5">
+              <div className="p-5 rounded-2xl bg-[#151a26] border border-white/10 space-y-1.5">
                 <span className="text-xs text-slate-400 font-medium">{t.impactTaxes}</span>
-                <div className="text-2xl font-black text-amber-400">
+                <div className="text-2xl font-semibold text-amber-400">
                   {(newTaxesVolume / 1000).toFixed(1)} mlrd som
                 </div>
                 <div className="text-xs font-bold text-amber-400 flex items-center gap-1">
@@ -255,7 +255,7 @@ export default function ScenariosPage() {
             </div>
 
             {/* Infrastructure Bottleneck Check */}
-            <div className="p-5 rounded-2xl bg-[#0b1b33] border border-blue-900/50 space-y-3">
+            <div className="p-5 rounded-2xl bg-[#151a26] border border-white/10 space-y-3">
               <h3 className="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
                 <AlertTriangle className="w-4 h-4 text-amber-600" />
                 {t.resourceBottlenecks}
@@ -263,7 +263,7 @@ export default function ScenariosPage() {
 
               <div className="space-y-2.5 text-xs">
                 {/* Electricity constraint */}
-                <div className="flex items-center justify-between p-3 rounded-xl bg-[#081324] border border-blue-900/50">
+                <div className="flex items-center justify-between p-3 rounded-xl bg-[#111620] border border-white/10">
                   <div className="flex items-center gap-2 font-medium">
                     <Zap className="w-4 h-4 text-amber-500" />
                     <span>Elektr quwatı talabı: <strong className="text-white">{requiredPowerMwt.toFixed(1)} MWt</strong> (Mavjud: {powerLimitMwt} MWt)</span>
@@ -280,7 +280,7 @@ export default function ScenariosPage() {
                 </div>
 
                 {/* Gas constraint */}
-                <div className="flex items-center justify-between p-3 rounded-xl bg-[#081324] border border-blue-900/50">
+                <div className="flex items-center justify-between p-3 rounded-xl bg-[#111620] border border-white/10">
                   <div className="flex items-center gap-2 font-medium">
                     <Flame className="w-4 h-4 text-red-500" />
                     <span>Tábiyiy gaz talabı: <strong className="text-white">{requiredGasM3h} m³/saat</strong> (Mavjud: {gasLimitM3h} m³/saat)</span>
@@ -306,7 +306,7 @@ export default function ScenariosPage() {
             </div>
 
             {/* FR-16 Disclaimer */}
-            <div className="text-xs text-slate-400 italic border-t border-blue-900/40 pt-4">
+            <div className="text-xs text-slate-400 italic border-t border-white/10 pt-4">
               Rásmiy eskertiw (FR-16): Ushbu ssenariy hisob-kitoblari ssenariy modeli hisoblanadi va amaldagi rásmiy statistika faktlarin ózgertpeydi.
             </div>
           </div>

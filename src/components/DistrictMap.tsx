@@ -46,16 +46,16 @@ export const DistrictMap: React.FC = () => {
         if (selectedMfy !== 'all' && mfy.id !== selectedMfy) return;
 
         const polygon = L.polygon(mfy.polygon, {
-          color: '#0a3d8f',
+          color: '#6d57d6',
           weight: 2,
           opacity: 0.8,
-          fillColor: '#3b82f6',
+          fillColor: '#8b72ff',
           fillOpacity: 0.08,
           dashArray: '6, 6',
         });
 
         polygon.bindTooltip(
-          `<div class="font-bold text-xs text-white">${escapeHtml(mfy.name)}</div><div class="text-[10px] text-blue-100">Xalıq: ${mfy.population.toLocaleString()}</div>`,
+          `<div class="font-bold text-xs text-white">${escapeHtml(mfy.name)}</div><div class="text-[10px] text-violet-100">Xalıq: ${mfy.population.toLocaleString()}</div>`,
           { permanent: false, direction: 'center', className: 'custom-map-tooltip' }
         );
 
@@ -91,12 +91,12 @@ export const DistrictMap: React.FC = () => {
 
     // 3. Draw Object Markers
     filteredObjects.forEach((obj) => {
-      let iconColor = '#0a3d8f';
-      let borderColor = '#0a3d8f';
-      let bgColor = '#eff6ff';
+      let iconColor = '#6d57d6';
+      let borderColor = '#6d57d6';
+      let bgColor = '#f3efff';
 
       if (obj.type === 'enterprise') {
-        iconColor = '#0a3d8f'; borderColor = '#0a3d8f'; bgColor = '#eff6ff';
+        iconColor = '#6d57d6'; borderColor = '#6d57d6'; bgColor = '#f3efff';
       } else if (obj.type === 'investment_project') {
         iconColor = '#059669'; borderColor = '#059669'; bgColor = '#f0fdf4';
       } else if (obj.type === 'industrial_zone') {
@@ -124,13 +124,13 @@ export const DistrictMap: React.FC = () => {
       const popupContent = document.createElement('div');
       popupContent.className = 'p-2 text-slate-800 font-sans min-w-[220px]';
       popupContent.innerHTML = `
-        <div class="text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded bg-blue-50 text-[#0a3d8f] w-fit mb-1 border border-blue-200">${escapeHtml(obj.id)}</div>
+        <div class="text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded bg-violet-50 text-[#6d57d6] w-fit mb-1 border border-violet-200">${escapeHtml(obj.id)}</div>
         <h4 class="font-bold text-sm text-slate-900 leading-snug mb-1">${escapeHtml(obj.name)}</h4>
         <p class="text-xs text-slate-600 mb-2">${escapeHtml(obj.address)}</p>
         <div class="text-xs text-slate-500 mb-3">
           <span>Mas'ul: <strong class="text-slate-700">${escapeHtml(obj.responsibleOrg)}</strong></span>
         </div>
-        <button id="btn-open-passport-${escapeHtml(obj.id)}" class="w-full py-2 px-3 text-xs font-bold bg-[#0a3d8f] hover:bg-blue-800 text-white rounded-xl flex items-center justify-center gap-1 shadow-sm transition-colors cursor-pointer">
+        <button id="btn-open-passport-${escapeHtml(obj.id)}" class="w-full py-2 px-3 text-xs font-bold bg-[#6d57d6] hover:bg-violet-500/15 text-white rounded-xl flex items-center justify-center gap-1 shadow-sm transition-colors cursor-pointer">
           <span>Obyekt Pasporti</span> →
         </button>
       `;
@@ -232,17 +232,17 @@ export const DistrictMap: React.FC = () => {
           [42.7050, 58.8800],
         ],
         {
-          color: '#0a3d8f',
+          color: '#6d57d6',
           weight: 3,
           opacity: 0.9,
-          fillColor: '#3b82f6',
+          fillColor: '#8b72ff',
           fillOpacity: 0.07,
           dashArray: undefined,
         }
       ).addTo(map);
 
       districtBoundary.bindTooltip(
-        '<div class="font-bold text-xs text-white">Shomanay Rayonı</div><div class="text-[10px] text-blue-100">Qoraqalpogʻiston Respublikasi</div>',
+        '<div class="font-bold text-xs text-white">Shomanay Rayonı</div><div class="text-[10px] text-violet-100">Qoraqalpogʻiston Respublikasi</div>',
         { permanent: false, direction: 'center', className: 'custom-map-tooltip' }
       );
 
@@ -271,16 +271,16 @@ export const DistrictMap: React.FC = () => {
 
 
   return (
-    <div className="relative w-full h-[720px] rounded-3xl overflow-hidden border border-blue-900/50 bg-[#081324] shadow-md flex flex-col md:flex-row">
+    <div className="relative w-full h-[720px] rounded-3xl overflow-hidden border border-white/10 bg-[#111620] shadow-md flex flex-col md:flex-row">
       {/* Map Filter Controls Sidebar in Clean Crisp White */}
-      <div className="w-full md:w-96 bg-[#081324] border-b md:border-b-0 md:border-r border-blue-900/50 p-6 flex flex-col gap-5 overflow-y-auto z-10">
+      <div className="w-full md:w-96 bg-[#111620] border-b md:border-b-0 md:border-r border-white/10 p-6 flex flex-col gap-5 overflow-y-auto z-10">
         <div>
           <div className="flex items-center justify-between mb-1.5">
-            <h3 className="text-sm font-extrabold text-white flex items-center gap-2">
-              <Compass className="w-5 h-5 text-[#0a3d8f]" />
+            <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+              <Compass className="w-5 h-5 text-[#6d57d6]" />
               GIS Basqarıw & Qatlamlar
             </h3>
-            <span className="text-[11px] font-mono font-bold px-2 py-0.5 rounded-full bg-blue-50 text-[#0a3d8f] border border-blue-200">
+            <span className="text-[11px] font-mono font-bold px-2 py-0.5 rounded-full bg-violet-50 text-[#6d57d6] border border-violet-200">
               WGS 84
             </span>
           </div>
@@ -295,7 +295,7 @@ export const DistrictMap: React.FC = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={t.searchObjectPlaceholder}
-            className="w-full pl-10 pr-4 py-2.5 text-xs rounded-xl bg-[#0b1b33] border border-blue-900/50 text-white placeholder-slate-400 focus:outline-none focus:border-cyan-400 focus:bg-[#081324] transition-all"
+            className="w-full pl-10 pr-4 py-2.5 text-xs rounded-xl bg-[#151a26] border border-white/10 text-white placeholder-slate-400 focus:outline-none focus:border-violet-400 focus:bg-[#111620] transition-all"
           />
         </div>
 
@@ -305,7 +305,7 @@ export const DistrictMap: React.FC = () => {
           <select
             value={selectedType}
             onChange={(e) => setSelectedType(e.target.value)}
-            className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-[#0b1b33] border border-blue-900/50 text-slate-200 focus:outline-none focus:border-cyan-400 focus:bg-[#081324]"
+            className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-[#151a26] border border-white/10 text-slate-200 focus:outline-none focus:border-violet-400 focus:bg-[#111620]"
           >
             <option value="all">Barlıq túrler ({objects.length})</option>
             <option value="enterprise">Kárxanalar</option>
@@ -321,7 +321,7 @@ export const DistrictMap: React.FC = () => {
           <select
             value={selectedMfy}
             onChange={(e) => setSelectedMfy(e.target.value)}
-            className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-[#0b1b33] border border-blue-900/50 text-slate-200 focus:outline-none focus:border-cyan-400 focus:bg-[#081324]"
+            className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-[#151a26] border border-white/10 text-slate-200 focus:outline-none focus:border-violet-400 focus:bg-[#111620]"
           >
             <option value="all">Barlıq MPJlar ({mfys.length})</option>
             {mfys.map((m) => (
@@ -333,41 +333,41 @@ export const DistrictMap: React.FC = () => {
         </div>
 
         {/* Layers toggle */}
-        <div className="pt-3 border-t border-blue-900/40 space-y-3">
+        <div className="pt-3 border-t border-white/10 space-y-3">
           <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
             <span className="flex items-center gap-1.5">
-              <Layers className="w-4 h-4 text-[#0a3d8f]" />
+              <Layers className="w-4 h-4 text-[#6d57d6]" />
               Karta Qatlamları
             </span>
           </div>
 
-          <label className="flex items-center justify-between text-xs text-slate-200 cursor-pointer font-medium hover:text-cyan-300">
+          <label className="flex items-center justify-between text-xs text-slate-200 cursor-pointer font-medium hover:text-violet-300">
             <span className="flex items-center gap-2.5">
-              <span className="w-3 h-3 rounded-sm bg-blue-600 border border-blue-700" />
+              <span className="w-3 h-3 rounded-sm bg-violet-600 border border-white/10" />
               {t.layerMfy}
             </span>
             <input
               type="checkbox"
               checked={layers.mfyBoundaries}
               onChange={(e) => setLayers({ ...layers, mfyBoundaries: e.target.checked })}
-              className="rounded border-slate-300 text-[#0a3d8f] focus:ring-0 w-4 h-4"
+              className="rounded border-slate-300 text-[#6d57d6] focus:ring-0 w-4 h-4"
             />
           </label>
 
-          <label className="flex items-center justify-between text-xs text-slate-200 cursor-pointer font-medium hover:text-cyan-300">
+          <label className="flex items-center justify-between text-xs text-slate-200 cursor-pointer font-medium hover:text-violet-300">
             <span className="flex items-center gap-2.5">
-              <span className="w-3 h-3 rounded-full bg-[#0a3d8f]" />
+              <span className="w-3 h-3 rounded-full bg-[#6d57d6]" />
               {t.layerEnterprises}
             </span>
             <input
               type="checkbox"
               checked={layers.enterprises}
               onChange={(e) => setLayers({ ...layers, enterprises: e.target.checked })}
-              className="rounded border-slate-300 text-[#0a3d8f] focus:ring-0 w-4 h-4"
+              className="rounded border-slate-300 text-[#6d57d6] focus:ring-0 w-4 h-4"
             />
           </label>
 
-          <label className="flex items-center justify-between text-xs text-slate-200 cursor-pointer font-medium hover:text-cyan-300">
+          <label className="flex items-center justify-between text-xs text-slate-200 cursor-pointer font-medium hover:text-violet-300">
             <span className="flex items-center gap-2.5">
               <span className="w-3 h-3 rounded-full bg-emerald-600" />
               {t.layerInvestments}
@@ -376,11 +376,11 @@ export const DistrictMap: React.FC = () => {
               type="checkbox"
               checked={layers.investments}
               onChange={(e) => setLayers({ ...layers, investments: e.target.checked })}
-              className="rounded border-slate-300 text-[#0a3d8f] focus:ring-0 w-4 h-4"
+              className="rounded border-slate-300 text-[#6d57d6] focus:ring-0 w-4 h-4"
             />
           </label>
 
-          <label className="flex items-center justify-between text-xs text-slate-200 cursor-pointer font-medium hover:text-cyan-300">
+          <label className="flex items-center justify-between text-xs text-slate-200 cursor-pointer font-medium hover:text-violet-300">
             <span className="flex items-center gap-2.5">
               <span className="w-3 h-3 rounded-full bg-amber-500" />
               {t.layerZones}
@@ -389,11 +389,11 @@ export const DistrictMap: React.FC = () => {
               type="checkbox"
               checked={layers.zones}
               onChange={(e) => setLayers({ ...layers, zones: e.target.checked })}
-              className="rounded border-slate-300 text-[#0a3d8f] focus:ring-0 w-4 h-4"
+              className="rounded border-slate-300 text-[#6d57d6] focus:ring-0 w-4 h-4"
             />
           </label>
 
-          <label className="flex items-center justify-between text-xs text-slate-200 cursor-pointer font-medium hover:text-cyan-300">
+          <label className="flex items-center justify-between text-xs text-slate-200 cursor-pointer font-medium hover:text-violet-300">
             <span className="flex items-center gap-2.5">
               <span className="w-3 h-3 rounded-full bg-purple-600" />
               {t.layerInfrastructure}
@@ -402,11 +402,11 @@ export const DistrictMap: React.FC = () => {
               type="checkbox"
               checked={layers.infrastructure}
               onChange={(e) => setLayers({ ...layers, infrastructure: e.target.checked })}
-              className="rounded border-slate-300 text-[#0a3d8f] focus:ring-0 w-4 h-4"
+              className="rounded border-slate-300 text-[#6d57d6] focus:ring-0 w-4 h-4"
             />
           </label>
 
-          <label className="flex items-center justify-between text-xs text-slate-200 cursor-pointer font-medium hover:text-cyan-300">
+          <label className="flex items-center justify-between text-xs text-slate-200 cursor-pointer font-medium hover:text-violet-300">
             <span className="flex items-center gap-2.5">
               <span className="w-3 h-3 rounded-full bg-red-600" />
               {t.layerIssues}
@@ -415,14 +415,14 @@ export const DistrictMap: React.FC = () => {
               type="checkbox"
               checked={layers.issues}
               onChange={(e) => setLayers({ ...layers, issues: e.target.checked })}
-              className="rounded border-slate-300 text-[#0a3d8f] focus:ring-0 w-4 h-4"
+              className="rounded border-slate-300 text-[#6d57d6] focus:ring-0 w-4 h-4"
             />
           </label>
         </div>
 
         {/* Quick Legend */}
-        <div className="mt-auto p-4 rounded-2xl bg-blue-950/40 border border-blue-800/50 text-xs text-slate-300 space-y-1">
-          <div className="font-bold text-cyan-300">Qollanba:</div>
+        <div className="mt-auto p-4 rounded-2xl bg-violet-500/10 border border-white/10 text-xs text-slate-300 space-y-1">
+          <div className="font-bold text-violet-300">Qollanba:</div>
           <div>• Obyekt ústine bassańız, tolıq pasportı ashıladı</div>
           <div>• Qızıl belgiler: Zárúr mashqala noqatları</div>
         </div>
@@ -430,9 +430,9 @@ export const DistrictMap: React.FC = () => {
 
       {/* Map Container */}
       <div className="flex-1 h-full w-full relative">
-        <div ref={mapContainerRef} className="w-full h-full bg-[#0b1b33]" />
+        <div ref={mapContainerRef} className="w-full h-full bg-[#151a26]" />
         {!isClient && (
-          <div className="absolute inset-0 flex items-center justify-center bg-[#081324] text-slate-400 text-sm">
+          <div className="absolute inset-0 flex items-center justify-center bg-[#111620] text-slate-400 text-sm">
             GIS Karta júklenbekte...
           </div>
         )}
