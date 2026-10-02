@@ -2,10 +2,12 @@
 
 import React, { useState } from 'react';
 import { useApp } from '@/context/AppContext';
+import { PageHero } from '@/components/PageKit';
 import { BarChart3, TrendingUp, Cpu, AlertTriangle, Zap, Flame, RotateCcw, Sparkles } from 'lucide-react';
 
 export default function ScenariosPage() {
   const { t } = useApp();
+
 
   // Scenario parameters
   const [investGrowth, setInvestGrowth] = useState<number>(15); // +15%
@@ -53,26 +55,22 @@ export default function ScenariosPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-semibold text-white flex items-center gap-2.5">
-            <BarChart3 className="w-7 h-7 text-violet-300" />
-            {t.scenarioTitle}
-          </h1>
-          <p className="text-slate-400 text-xs sm:text-sm mt-1">
-            {t.scenarioSubtitle} (FR-16)
-          </p>
-        </div>
-
-        <button
+      <PageHero
+        icon={BarChart3}
+        eyebrow="«Eger…» modeli"
+        title={t.scenarioTitle}
+        subtitle={`${t.scenarioSubtitle} (FR-16)`}
+        color="#6b8cff"
+        actions={
+          <button
           onClick={handleReset}
-          className="px-4 py-2.5 rounded-2xl bg-[#111620] hover:bg-[#1a1f2c]/60 text-slate-200 text-xs font-bold border border-white/10 shadow-2xs transition-colors flex items-center gap-1.5 self-start sm:self-auto"
+          className="sc-button"
         >
           <RotateCcw className="w-4 h-4 text-violet-400" />
           <span>Boshlang&apos;ich parametrlar</span>
         </button>
-      </div>
+        }
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left: Interactive Controls in Crisp White (5 cols) */}

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useApp } from '@/context/AppContext';
+import { PageHero, IssuesInsights, useIssueTiles } from '@/components/PageKit';
 import { IssueCategory, IssuePriority } from '@/types';
 import {
   AlertOctagon,
@@ -22,6 +23,7 @@ import {
 
 export default function IssuesPage() {
   const { issues, createIssue, isSaving, error, objects, mfys, t, openObjectPassport } = useApp();
+  const issueTiles = useIssueTiles();
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [priorityFilter, setPriorityFilter] = useState<string>('all');
@@ -87,27 +89,25 @@ export default function IssuesPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-semibold text-white flex items-center gap-2.5">
-            <AlertOctagon className="w-7 h-7 text-red-600" />
-            {t.pageIssuesTitle}
-          </h1>
-          <p className="text-slate-400 text-xs sm:text-sm mt-1">
-            {t.pageIssuesSubtitle}
-          </p>
-        </div>
-
-        <button
+      <PageHero
+        icon={AlertOctagon}
+        eyebrow="Risk reestri"
+        title={t.pageIssuesTitle}
+        subtitle={t.pageIssuesSubtitle}
+        color="#e0679c"
+        tiles={issueTiles}
+        actions={
+          <button
           disabled={isSaving}
           onClick={() => setCreateModalOpen(true)}
-          className="px-5 py-3 rounded-2xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-md shadow-red-600/20 transition-all flex items-center gap-2 self-start sm:self-auto"
+          className="sc-button sc-primary"
         >
           <PlusCircle className="w-4 h-4" />
           <span>{t.btnReportIssue}</span>
         </button>
-      </div>
+        }
+      />
+      <IssuesInsights />
 
       {/* Filters Bar in Crisp White */}
       <div className="p-5 rounded-3xl bg-[#111620] border border-white/10 shadow-sm flex flex-wrap items-center gap-4">

@@ -46,9 +46,9 @@ export const Sparkline: React.FC<{ values: { value: number }[]; color: string }>
 
 let gradientId = 0;
 
-export const AreaChart: React.FC<{ points: Point[]; color?: string; height?: number }> = ({ points, color = '#9a85ff', height = 300 }) => {
+export const AreaChart: React.FC<{ points: Point[]; color?: string; height?: number; width?: number }> = ({ points, color = '#9a85ff', height = 300, width = 760 }) => {
   const id = React.useMemo(() => `sc-area-${gradientId++}`, []);
-  const W = 760, H = height, L = 40, B = 34, T = 14, R = 12;
+  const W = width, H = height, L = 40, B = 34, T = 14, R = 12;
   const max = Math.max(...points.map((p) => p.value), 4);
   const top = Math.ceil(max / 4) * 4;
   const x = (i: number) => L + (i / Math.max(points.length - 1, 1)) * (W - L - R);

@@ -1,7 +1,8 @@
 'use client';
 import { useState } from 'react';
-import { Download, Printer } from 'lucide-react';
+import { Download, FileText, Printer } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
+import { PageHero } from '@/components/PageKit';
 import { downloadCsv } from '@/lib/csv';
 import { reportRows } from '@/lib/reports';
 export default function ReportsPage() {
@@ -10,11 +11,19 @@ export default function ReportsPage() {
   const [mfy, setMfy] = useState('all');
   const [headers, ...rows] = reportRows(type, mfy, { tasks, issues, investments });
   return <div className="sc-stack">
-    <div className="sc-page-title">
-      <div className="sc-eyebrow"><i /> {t.navReports}</div>
-      <h1>{t.pageReportsTitle}</h1>
-      <p>{t.pageReportsSubtitle}</p>
-    </div>
+    <PageHero
+      icon={FileText}
+      eyebrow={t.navReports}
+      title={t.pageReportsTitle}
+      subtitle={t.pageReportsSubtitle}
+      color="#2bb5d6"
+      tiles={[
+        { label: 'Tapsırmalar', value: tasks.length, color: '#8b72ff' },
+        { label: 'Mashqalalar', value: issues.length, color: '#e0679c' },
+        { label: 'Joybarlar', value: investments.length, color: '#4bd8a6' },
+        { label: 'Tańlanǵan jazıwlar', value: rows.length, color: '#2bb5d6' },
+      ]}
+    />
 
     <div className="sc-panel print:hidden">
       <div className="sc-actions">

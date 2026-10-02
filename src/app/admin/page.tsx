@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
-import { Download, Search, Upload } from 'lucide-react';
+import { Database, Download, Search, Upload } from 'lucide-react';
+import { PageHero } from '@/components/PageKit';
 import { apiRequest, useApp } from '@/context/AppContext';
 import { downloadCsv, parseCsv } from '@/lib/csv';
 export default function AdminPage() {
@@ -25,11 +26,18 @@ export default function AdminPage() {
   };
   const logs = auditLogs.filter(log => `${log.userName} ${log.entityName} ${log.action}`.toLowerCase().includes(search.toLowerCase()));
   return <div className="sc-stack">
-    <div className="sc-page-title">
-      <div className="sc-eyebrow"><i /> {t.navAdmin}</div>
-      <h1>{t.pageAdminTitle}</h1>
-      <p>{t.pageAdminSubtitle}</p>
-    </div>
+    <PageHero
+      icon={Database}
+      eyebrow={t.navAdmin}
+      title={t.pageAdminTitle}
+      subtitle={t.pageAdminSubtitle}
+      color="#b88cff"
+      tiles={[
+        { label: 'Audit jazıwları', value: auditLogs.length, color: '#b88cff' },
+        { label: 'MPJlar', value: mfys.length, color: '#2bb5d6' },
+        { label: 'Filtrlengen', value: logs.length, color: '#4bd8a6' },
+      ]}
+    />
 
     {canImport && <section className="sc-panel">
       <div className="sc-panel-heading">

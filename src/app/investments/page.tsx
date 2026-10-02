@@ -2,10 +2,12 @@
 
 import React, { useState } from 'react';
 import { useApp } from '@/context/AppContext';
+import { PageHero, InvestmentsInsights, useInvestmentTiles } from '@/components/PageKit';
 import { TrendingUp, CheckCircle2, Clock, AlertTriangle, Search, Users } from 'lucide-react';
 
 export default function InvestmentsPage() {
   const { investments, t, openObjectPassport } = useApp();
+  const investTiles = useInvestmentTiles();
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredInvestments = investments.filter((inv) =>
@@ -16,18 +18,15 @@ export default function InvestmentsPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-semibold text-white flex items-center gap-2.5">
-            <TrendingUp className="w-7 h-7 text-violet-300" />
-            {t.pageInvestTitle}
-          </h1>
-          <p className="text-slate-400 text-xs sm:text-sm mt-1">
-            {t.pageInvestSubtitle}
-          </p>
-        </div>
-      </div>
+      <PageHero
+        icon={TrendingUp}
+        eyebrow="Investiciya"
+        title={t.pageInvestTitle}
+        subtitle={t.pageInvestSubtitle}
+        color="#4bd8a6"
+        tiles={investTiles}
+      />
+      <InvestmentsInsights />
 
       {/* Search in Crisp White */}
       <div className="p-5 rounded-3xl bg-[#111620] border border-white/10 shadow-sm flex items-center">

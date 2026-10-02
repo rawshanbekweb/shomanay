@@ -95,3 +95,35 @@
 .sc-chart-grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 @media (max-width: 1280px) { .sc-chart-grid.three { grid-template-columns: minmax(0, 1fr); } }
 @media (prefers-reduced-motion: reduce) { .mm-cell, .mm-outline, .sc-draw, .sc-fade, .sc-columns span, .sc-hbar-track span { animation: none !important; opacity: 1; stroke-dashoffset: 0; } .mm-sweep, .mm-link, .mm-pulse, .mm-pin, .mm-live i { animation: none !important; } }
+
+/* ──────────────────────────────────────────────────────────────
+   PageKit: hero, hisoblagich kartalar hám barlıq sahifalar ushın birdey kartalar
+   ────────────────────────────────────────────────────────────── */
+.pk-hero { --k: #8b72ff; position: relative; overflow: hidden; isolation: isolate; border-radius: 28px; padding: 28px 32px; border: 1px solid color-mix(in srgb, var(--k) 28%, #a3b4df1c); background: linear-gradient(135deg, color-mix(in srgb, var(--k) 14%, #0c1019), #0a0e16 65%); animation: mm-fade 0.6s both; }
+.pk-orb { position: absolute; z-index: -1; right: -80px; top: -120px; width: 380px; height: 380px; border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--k) 38%, transparent), transparent 68%); filter: blur(10px); animation: pk-drift 11s ease-in-out infinite alternate; }
+.pk-hero-grid { position: absolute; z-index: -1; inset: 0; background-image: linear-gradient(#ffffff07 1px, transparent 1px), linear-gradient(90deg, #ffffff07 1px, transparent 1px); background-size: 44px 44px; -webkit-mask-image: linear-gradient(90deg, transparent 30%, #000); mask-image: linear-gradient(90deg, transparent 30%, #000); }
+.pk-hero-top { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+.pk-icon { display: grid; place-items: center; width: 56px; height: 56px; flex-shrink: 0; border-radius: 18px; color: var(--k); background: color-mix(in srgb, var(--k) 18%, transparent); border: 1px solid color-mix(in srgb, var(--k) 45%, transparent); box-shadow: 0 0 34px color-mix(in srgb, var(--k) 30%, transparent); }
+.pk-hero-text { flex: 1; min-width: 240px; }
+.pk-hero h1 { margin: 8px 0 6px; font-size: clamp(24px, 2.6vw, 36px); font-weight: 600; letter-spacing: -0.035em; line-height: 1.2; color: #f1f3fb; }
+.pk-hero p { margin: 0; font-size: 14px; color: #9aa6bf; line-height: 1.6; max-width: 760px; }
+.pk-actions { display: flex; gap: 10px; align-items: center; }
+.pk-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; margin-top: 26px; }
+.pk-tile { --k: #8b72ff; padding: 16px 18px; border-radius: 18px; background: color-mix(in srgb, var(--k) 8%, #0b0f17cc); border: 1px solid color-mix(in srgb, var(--k) 24%, #ffffff0a); backdrop-filter: blur(8px); transition: transform 0.25s, border-color 0.25s; animation: mm-fade 0.6s calc(0.08s * var(--i) + 0.15s) both; }
+.pk-tile:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--k) 60%, transparent); }
+.pk-tile > span { font-size: 12px; color: #9aa6bf; }
+.pk-tile-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; margin-top: 8px; }
+.pk-tile strong { font-size: 30px; font-weight: 570; letter-spacing: -0.04em; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.pk-tile strong small { font-size: 13px; font-weight: 400; color: #9aa6bf; letter-spacing: 0; }
+.pk-tile .sc-spark { width: 42%; height: 34px; }
+.pk-tile em { display: block; margin-top: 6px; font-style: normal; font-size: 11px; color: #7f8aa3; }
+@keyframes pk-drift { to { transform: translate(-60px, 40px) scale(1.15); } }
+
+/* Eski Tailwind kartalardı birdey "shisha" kórinisine keltiriw */
+.an-content [class~="bg-[#111620]"] { background: linear-gradient(150deg, #101624, #0b0f17 75%) !important; border-color: #a3b4df1c !important; border-radius: 24px; transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s; }
+.an-content [class~="bg-[#111620]"]:is(.hover\:shadow-md, [class*="hover:"]):hover { border-color: #8b72ff55 !important; box-shadow: 0 16px 40px #0006; }
+.an-content [class~="bg-[#151a26]"] { background: #0c111b !important; border-color: #a3b4df14 !important; }
+.an-content input, .an-content select, .an-content textarea { transition: border-color 0.2s, box-shadow 0.2s; }
+.an-content input:focus, .an-content select:focus, .an-content textarea:focus { box-shadow: 0 0 0 3px #8b72ff22; }
+.an-content > .space-y-6 > :not(.pk-hero) { animation: mm-fade 0.55s both; }
+@media (max-width: 760px) { .pk-hero { padding: 22px 18px; } .pk-actions { width: 100%; } }

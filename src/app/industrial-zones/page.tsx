@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useApp } from '@/context/AppContext';
+import { PageHero, ZonesInsights, useZoneTiles } from '@/components/PageKit';
 import {
   Factory,
   Zap,
@@ -14,18 +15,19 @@ import {
 
 export default function IndustrialZonesPage() {
   const { industrialZones, mfys, t } = useApp();
+  const zoneTiles = useZoneTiles();
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-semibold text-white flex items-center gap-2.5">
-          <Factory className="w-7 h-7 text-violet-300" />
-          {t.pageZonesTitle}
-        </h1>
-        <p className="text-slate-400 text-xs sm:text-sm mt-1">
-          {t.pageZonesSubtitle}
-        </p>
-      </div>
+      <PageHero
+        icon={Factory}
+        eyebrow="Sanaat zonaları"
+        title={t.pageZonesTitle}
+        subtitle={t.pageZonesSubtitle}
+        color="#e59a45"
+        tiles={zoneTiles}
+      />
+      <ZonesInsights />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {industrialZones.map((zone) => {

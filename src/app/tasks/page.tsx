@@ -3,6 +3,7 @@ import Image from 'next/image';
 
 import React, { useState } from 'react';
 import { useApp } from '@/context/AppContext';
+import { PageHero, TasksInsights, useTaskTiles } from '@/components/PageKit';
 import { Task, IssuePriority } from '@/types';
 import { CheckSquare, Clock, AlertTriangle, PlusCircle, Upload, Calendar, User, ShieldCheck, Building2, Search } from 'lucide-react';
 import confetti from 'canvas-confetti';
@@ -23,6 +24,7 @@ export default function TasksPage() {
     mfys,
     openObjectPassport,
   } = useApp();
+  const taskTiles = useTaskTiles();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -153,32 +155,25 @@ export default function TasksPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl sm:text-3xl font-semibold text-white flex items-center gap-2.5">
-              <CheckSquare className="w-7 h-7 text-violet-300" />
-              {t.pageTasksTitle}
-            </h1>
-            <span className="text-xs px-3 py-1 rounded-full bg-violet-500/10 text-violet-300 font-bold border border-white/10">
-              {tasks.length} {t.tabAllTasks}
-            </span>
-          </div>
-          <p className="text-slate-400 text-xs sm:text-sm mt-1">
-            {t.pageTasksSubtitle}
-          </p>
-        </div>
-
-        <button
+      <PageHero
+        icon={CheckSquare}
+        eyebrow="Qadaǵalaw"
+        title={t.pageTasksTitle}
+        subtitle={t.pageTasksSubtitle}
+        color="#8b72ff"
+        tiles={taskTiles}
+        actions={
+          <button
                 disabled={isSaving || !['admin', 'hokim', 'coordinator'].includes(currentUser.role)}
           onClick={() => setCreateModalOpen(true)}
-          className="px-5 py-3 rounded-2xl bg-[#6d57d6] hover:bg-[#7a63e6] text-white text-xs font-bold shadow-md shadow-violet-900/10 transition-all flex items-center gap-2 self-start sm:self-auto"
+          className="sc-button sc-primary"
         >
           <PlusCircle className="w-4 h-4" />
           <span>{t.btnCreateTask}</span>
         </button>
-      </div>
+        }
+      />
+      <TasksInsights />
 
       {/* Filters bar in Crisp White */}
       <div className="p-5 rounded-3xl bg-[#111620] border border-white/10 shadow-sm flex flex-wrap items-center justify-between gap-4">
