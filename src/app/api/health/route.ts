@@ -14,7 +14,7 @@ export async function GET(req: Request) {
     return NextResponse.json({
       status: 'ok',
       database: 'connected',
-      engine: 'Prisma + SQLite',
+      engine: 'Prisma + PostgreSQL (Neon)',
       dataSummary: {
         tasks: taskCount,
         issues: issueCount,

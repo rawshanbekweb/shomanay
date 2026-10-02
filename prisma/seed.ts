@@ -12,7 +12,7 @@ import {
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('Seeding SQLite database with Shomanay DEMO datasets...');
+  console.log('Seeding PostgreSQL database with Shomanay DEMO datasets...');
 
   // Existing records are preserved; this command inserts sample data only.
   // 2. Seed MFYs

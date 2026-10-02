@@ -6,6 +6,23 @@ import { useApp } from '@/context/AppContext';
 import { X, Building2, TrendingUp, Factory, Zap, GraduationCap, MapPin, User, ShieldCheck, AlertTriangle, FileText, CheckCircle2, PlusCircle, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 
+/** Súwret ashılmasa (404 / tarmaq qátesi) bos rám ornına tolıq kórinetuǵın placeholder shıǵadı. */
+const PhotoTile: React.FC<{ url: string; alt: string; label: string }> = ({ url, alt, label }) => {
+  const [failed, setFailed] = useState(false);
+  return (
+    <div className="relative rounded-2xl overflow-hidden border border-white/10 group h-64 bg-white/5 shadow-sm">
+      {failed ? (
+        <div className="w-full h-full grid place-items-center text-xs text-slate-400">Súwret júklenbedi</div>
+      ) : (
+        <Image unoptimized width={800} height={600} src={url} alt={alt} onError={() => setFailed(true)} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+      )}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+        <span className="text-xs text-white font-medium">{label}</span>
+      </div>
+    </div>
+  );
+};
+
 export const ObjectPassportModal: React.FC = () => {
   const { selectedPassportObject, closeObjectPassport, t, tasks, issues, mfys, currentUser, updateObject, isSaving } = useApp();
   const canEdit = ['admin', 'hokim', 'coordinator', 'statistician'].includes(currentUser.role);
@@ -339,12 +356,7 @@ export const ObjectPassportModal: React.FC = () => {
           {activeTab === 'photos' && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {obj.photos.map((url, idx) => (
-                <div key={idx} className="relative rounded-2xl overflow-hidden border border-white/10 group h-64 bg-white/5 shadow-sm">
-                  <Image unoptimized width={800} height={600} src={url} alt={obj.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
-                    <span className="text-xs text-white font-medium">Fikslengen foto dálili #{idx + 1}</span>
-                  </div>
-                </div>
+                <PhotoTile key={idx} url={url} alt={obj.name} label={`Fikslengen foto dálili #${idx + 1}`} />
               ))}
             </div>
           )}

@@ -186,7 +186,7 @@ export const mockObjects: DistrictObject[] = [
     description: 'Paxtanı qayta islew, jip-yigiruv hám tekstil mahsulotları islep shıǵarıw boyınsha iri kárxana.',
     photos: [
       'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?w=800&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&auto=format&fit=crop&q=80',
     ],
     documents: [
       { title: 'Gúwalıq hám Litsenziya', date: '2024-03-15', size: '2.4 MB', type: 'PDF' },
@@ -260,7 +260,7 @@ export const mockObjects: DistrictObject[] = [
     description: '14.5 gektar maydonda ornalasqan kishi sanaat zonası. Qurılıs materialları hám jeńil sanaat joybarları ushın.',
     photos: [
       'https://images.unsplash.com/photo-1587293852726-70cdb56c2866?w=800&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1541888946425-d0fbb186c5f9?w=800&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&auto=format&fit=crop&q=80',
     ],
     documents: [
       { title: 'KSZ Master-rejisi', date: '2024-05-18', size: '14.0 MB', type: 'PDF' },
@@ -328,7 +328,7 @@ export const mockObjects: DistrictObject[] = [
     updatedDate: '2026-09-28',
     description: 'Sút qabıllaw punktleri hám tábiyiy pishloq, qatıq islep shıǵarıw zavodı.',
     photos: [
-      'https://images.unsplash.com/photo-1527153857715-3908f2ae5e81?w=800&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=800&auto=format&fit=crop&q=80',
     ],
     documents: [
       { title: 'Zavod texnologik liniyası', date: '2025-08-14', size: '3.6 MB', type: 'PDF' },
@@ -661,7 +661,7 @@ export const mockTasks: Task[] = [
       numericResult: 2.4,
       unit: 'km',
       photos: [
-        'https://images.unsplash.com/photo-1541888946425-d0fbb186c5f9?w=800&auto=format&fit=crop&q=80',
+        'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&auto=format&fit=crop&q=80',
       ],
       documents: [
         { name: 'Sarmanbaykol_Jol_Qabıllaw_Akti.pdf', size: '2.8 MB', type: 'PDF' },
