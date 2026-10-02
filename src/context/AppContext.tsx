@@ -15,12 +15,15 @@ interface AppContextType {
   refreshData: () => Promise<void>;
   selectedPassportObject: DistrictObject | null; openObjectPassport: (object: DistrictObject | string) => void; closeObjectPassport: () => void;
   createIssue: (issue: NewIssue) => Promise<ActionResult>; createTask: (task: NewTask) => Promise<ActionResult>;
+  createObject: (object: NewObject) => Promise<ActionResult>; updateObject: (id: string, patch: ObjectPatch) => Promise<ActionResult>;
   startTask: (id: string) => Promise<ActionResult>;
   submitEvidence: (id: string, evidence: TaskEvidence) => Promise<ActionResult>;
   reviewTask: (id: string, accepted: boolean, notes?: string) => Promise<ActionResult>;
   extendDeadline: (id: string, deadline: string, reason: string) => Promise<ActionResult>;
 }
 const AppContext = createContext<AppContextType | undefined>(undefined);
+export type NewObject = { name: string; type: DistrictObject['type']; mfyId: string; address: string; lat: number; lng: number; responsibleOrg: string; curator: string; status: DistrictObject['status']; description?: string };
+export type ObjectPatch = Partial<Pick<DistrictObject, 'status' | 'description' | 'curator' | 'responsibleOrg' | 'address'>>;
 export async function apiRequest<T>(path: string, options?: RequestInit): Promise<T> {
   // GET so'rovlar Neon "uyqudan" uyg'onayotganda 5xx berishi mumkin — 2 marta qayta uriniladi.
   const isRead = !options?.method || options.method === 'GET';
@@ -100,11 +103,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const updateTask = (id: string, body: unknown) => mutate<Task>(`tasks/${encodeURIComponent(id)}`, body, updated => setTasks(previous => previous.map(task => task.id === id ? updated : task)));
   const createTask = (body: NewTask) => mutate<Task>('tasks', body, task => setTasks(previous => [task, ...previous]), 'POST');
   const createIssue = (body: NewIssue) => mutate<Issue>('issues', body, issue => setIssues(previous => [issue, ...previous]), 'POST');
+  const createObject = (body: NewObject) => mutate<DistrictObject>('objects', body, object => setObjects(previous => [object, ...previous]), 'POST');
+  const updateObject = (id: string, body: ObjectPatch) => mutate<DistrictObject>(`objects/${encodeURIComponent(id)}`, body, updated => { setObjects(previous => previous.map(object => object.id === id ? updated : object)); setSelectedPassportObject(current => current?.id === id ? updated : current); });
   const openObjectPassport = (object: DistrictObject | string) => setSelectedPassportObject(typeof object === 'string' ? objects.find(item => item.id === object) || null : object);
   return <AppContext.Provider value={{
     language, setLanguage, t: translations[language], currentUser, objects, mfys, issues, tasks, investments, industrialZones, indicators, auditLogs,
     isBackendConnected, isLoading, isSaving, error, isDemo, refreshData, selectedPassportObject, openObjectPassport, closeObjectPassport: () => setSelectedPassportObject(null),
-    createTask, createIssue, startTask: id => updateTask(id, { action: 'start' }),
+    createTask, createIssue, createObject, updateObject, startTask: id => updateTask(id, { action: 'start' }),
     submitEvidence: (id, evidence) => updateTask(id, { action: 'evidence', evidence }),
     reviewTask: (id, accepted, notes) => updateTask(id, { action: 'review', accepted, notes: notes || 'Tekshiruv yakunlandi.' }),
     extendDeadline: (id, deadline, reason) => updateTask(id, { action: 'extend', deadline, reason }),

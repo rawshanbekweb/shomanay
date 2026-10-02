@@ -5,7 +5,7 @@ import { Briefcase, Compass, MapPin, TriangleAlert, Users } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 import { fmtNum } from '@/components/charts';
 import gridModel from '@/data/shumanay_grid_model.json';
-import type { Language, ObjectStatus } from '@/types';
+import type { Language, ObjectStatus, ObjectType } from '@/types';
 
 type Site = { id: string; name: string; code: string; x: number; y: number; textPos?: string };
 type Metric = 'population' | 'projects' | 'issues' | 'objects';
@@ -69,7 +69,12 @@ function fitLinear(xs: number[], ys: number[]): (v: number) => number {
   return (v) => my + k * (v - mx);
 }
 
-export const MfyMap: React.FC<{ onSwitchToStreetGis?: () => void; tall?: boolean }> = ({ onSwitchToStreetGis, tall }) => {
+const LAYERS: { type: ObjectType; label: string }[] = [
+  { type: 'enterprise', label: 'Kárxanalar' }, { type: 'investment_project', label: 'Joybarlar' }, { type: 'industrial_zone', label: 'Zonalar' },
+  { type: 'infrastructure', label: 'Infratuzilma' }, { type: 'social', label: 'Sociallıq' },
+];
+
+export const MfyMap: React.FC<{ onSwitchToStreetGis?: () => void; onAddObject?: () => void; tall?: boolean }> = ({ onSwitchToStreetGis, onAddObject, tall }) => {
   const { language, mfys, objects, openObjectPassport } = useApp();
   const c = COPY[language];
   const { path, mfys: sites } = gridModel as { path: string; mfys: Site[] };
@@ -77,6 +82,7 @@ export const MfyMap: React.FC<{ onSwitchToStreetGis?: () => void; tall?: boolean
   const [metric, setMetric] = useState<Metric>('population');
   const [selected, setSelected] = useState<string | null>(null);
   const [hovered, setHovered] = useState<string | null>(null);
+  const [layers, setLayers] = useState<Record<ObjectType, boolean>>({ enterprise: true, investment_project: true, industrial_zone: true, infrastructure: true, social: true });
   const [pointer, setPointer] = useState<{ x: number; y: number } | null>(null);
 
   const nameOf = (s: Site) => (mfys.find((m) => m.id === s.id)?.name ?? s.name);
@@ -108,7 +114,7 @@ export const MfyMap: React.FC<{ onSwitchToStreetGis?: () => void; tall?: boolean
     const fx = fitLinear(pairs.map((p) => p.m!.centerCoords[1]), pairs.map((p) => p.s.x));
     const fy = fitLinear(pairs.map((p) => p.m!.centerCoords[0]), pairs.map((p) => p.s.y));
     return objects.map((o) => ({
-      id: o.id, name: o.name, status: o.status, mfyId: o.mfyId,
+      id: o.id, name: o.name, status: o.status, mfyId: o.mfyId, type: o.type,
       x: Math.min(Math.max(fx(o.coords[1]), 10), W - 10), y: Math.min(Math.max(fy(o.coords[0]), 10), H - 10),
     }));
   }, [sites, mfys, objects]);
@@ -146,6 +152,9 @@ export const MfyMap: React.FC<{ onSwitchToStreetGis?: () => void; tall?: boolean
               </button>
             );
           })}
+          {onAddObject && (
+            <button onClick={onAddObject} className="mm-gis mm-add">+ Obyekt</button>
+          )}
           {onSwitchToStreetGis && (
             <button onClick={onSwitchToStreetGis} className="mm-gis"><Compass size={14} /> {c.gis}</button>
           )}
@@ -208,7 +217,7 @@ export const MfyMap: React.FC<{ onSwitchToStreetGis?: () => void; tall?: boolean
             ))}
 
             {/* Obyektler */}
-            {pins.map((p) => (
+            {pins.filter((p) => layers[p.type]).map((p) => (
               <circle key={p.id} cx={p.x} cy={p.y} r={focusId === p.mfyId ? 3.6 : 2.6} fill={STATUS_COLOR[p.status]} className="mm-pin"
                 onClick={(e) => { e.stopPropagation(); openObjectPassport(p.id); }}>
                 <title>{p.name}</title>
@@ -237,6 +246,12 @@ export const MfyMap: React.FC<{ onSwitchToStreetGis?: () => void; tall?: boolean
               <span>{c[metric]}: {fmt(stats[focus.id][metric])} {unitFor(metric)}</span>
             </div>
           )}
+
+          <div className="mm-layers" role="group" aria-label="Qatlamlar">
+            {LAYERS.map((l) => (
+              <button key={l.type} aria-pressed={layers[l.type]} onClick={() => setLayers((p) => ({ ...p, [l.type]: !p[l.type] }))}>{l.label}</button>
+            ))}
+          </div>
 
           <ul className="mm-legend" aria-hidden="true">
             {(Object.keys(STATUS_COLOR) as ObjectStatus[]).map((k) => <li key={k}><i style={{ background: STATUS_COLOR[k] }} />{k.replace('_', ' ')}</li>)}

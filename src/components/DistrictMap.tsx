@@ -122,13 +122,13 @@ export const DistrictMap: React.FC = () => {
       const marker = L.marker(obj.coords, { icon: customIcon });
 
       const popupContent = document.createElement('div');
-      popupContent.className = 'p-2 text-slate-800 font-sans min-w-[220px]';
+      popupContent.className = 'p-2 text-slate-100 font-sans min-w-[220px]';
       popupContent.innerHTML = `
-        <div class="text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded bg-violet-50 text-[#6d57d6] w-fit mb-1 border border-violet-200">${escapeHtml(obj.id)}</div>
-        <h4 class="font-bold text-sm text-slate-900 leading-snug mb-1">${escapeHtml(obj.name)}</h4>
-        <p class="text-xs text-slate-600 mb-2">${escapeHtml(obj.address)}</p>
-        <div class="text-xs text-slate-500 mb-3">
-          <span>Mas'ul: <strong class="text-slate-700">${escapeHtml(obj.responsibleOrg)}</strong></span>
+        <div class="text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded bg-violet-500/10 text-violet-300 w-fit mb-1 border border-violet-400/30">${escapeHtml(obj.id)}</div>
+        <h4 class="font-bold text-sm text-slate-100 leading-snug mb-1">${escapeHtml(obj.name)}</h4>
+        <p class="text-xs text-slate-400 mb-2">${escapeHtml(obj.address)}</p>
+        <div class="text-xs text-slate-400 mb-3">
+          <span>Mas'ul: <strong class="text-slate-300">${escapeHtml(obj.responsibleOrg)}</strong></span>
         </div>
         <button id="btn-open-passport-${escapeHtml(obj.id)}" class="w-full py-2 px-3 text-xs font-bold bg-[#6d57d6] hover:bg-violet-500/15 text-white rounded-xl flex items-center justify-center gap-1 shadow-sm transition-colors cursor-pointer">
           <span>Obyekt Pasporti</span> →
@@ -168,7 +168,7 @@ export const DistrictMap: React.FC = () => {
 
         const issueMarker = L.marker(offsetCoords, { icon: issueIcon });
         issueMarker.bindTooltip(
-          `<div class="font-bold text-xs text-red-600">Mashqala: ${escapeHtml(iss.code)}</div><div class="text-xs text-slate-800">${escapeHtml(iss.title)}</div>`,
+          `<div class="font-bold text-xs text-red-400">Mashqala: ${escapeHtml(iss.code)}</div><div class="text-xs text-slate-100">${escapeHtml(iss.title)}</div>`,
           { permanent: false, direction: 'top' }
         );
 
@@ -277,10 +277,10 @@ export const DistrictMap: React.FC = () => {
         <div>
           <div className="flex items-center justify-between mb-1.5">
             <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-              <Compass className="w-5 h-5 text-[#6d57d6]" />
+              <Compass className="w-5 h-5 text-violet-300" />
               GIS Basqarıw & Qatlamlar
             </h3>
-            <span className="text-[11px] font-mono font-bold px-2 py-0.5 rounded-full bg-violet-50 text-[#6d57d6] border border-violet-200">
+            <span className="text-[11px] font-mono font-bold px-2 py-0.5 rounded-full bg-violet-500/10 text-violet-300 border border-violet-400/30">
               WGS 84
             </span>
           </div>
@@ -336,7 +336,7 @@ export const DistrictMap: React.FC = () => {
         <div className="pt-3 border-t border-white/10 space-y-3">
           <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
             <span className="flex items-center gap-1.5">
-              <Layers className="w-4 h-4 text-[#6d57d6]" />
+              <Layers className="w-4 h-4 text-violet-300" />
               Karta Qatlamları
             </span>
           </div>
@@ -350,7 +350,7 @@ export const DistrictMap: React.FC = () => {
               type="checkbox"
               checked={layers.mfyBoundaries}
               onChange={(e) => setLayers({ ...layers, mfyBoundaries: e.target.checked })}
-              className="rounded border-slate-300 text-[#6d57d6] focus:ring-0 w-4 h-4"
+              className="rounded border-slate-300 text-violet-300 focus:ring-0 w-4 h-4"
             />
           </label>
 
@@ -363,7 +363,7 @@ export const DistrictMap: React.FC = () => {
               type="checkbox"
               checked={layers.enterprises}
               onChange={(e) => setLayers({ ...layers, enterprises: e.target.checked })}
-              className="rounded border-slate-300 text-[#6d57d6] focus:ring-0 w-4 h-4"
+              className="rounded border-slate-300 text-violet-300 focus:ring-0 w-4 h-4"
             />
           </label>
 
@@ -376,7 +376,7 @@ export const DistrictMap: React.FC = () => {
               type="checkbox"
               checked={layers.investments}
               onChange={(e) => setLayers({ ...layers, investments: e.target.checked })}
-              className="rounded border-slate-300 text-[#6d57d6] focus:ring-0 w-4 h-4"
+              className="rounded border-slate-300 text-violet-300 focus:ring-0 w-4 h-4"
             />
           </label>
 
@@ -389,7 +389,7 @@ export const DistrictMap: React.FC = () => {
               type="checkbox"
               checked={layers.zones}
               onChange={(e) => setLayers({ ...layers, zones: e.target.checked })}
-              className="rounded border-slate-300 text-[#6d57d6] focus:ring-0 w-4 h-4"
+              className="rounded border-slate-300 text-violet-300 focus:ring-0 w-4 h-4"
             />
           </label>
 
@@ -402,7 +402,7 @@ export const DistrictMap: React.FC = () => {
               type="checkbox"
               checked={layers.infrastructure}
               onChange={(e) => setLayers({ ...layers, infrastructure: e.target.checked })}
-              className="rounded border-slate-300 text-[#6d57d6] focus:ring-0 w-4 h-4"
+              className="rounded border-slate-300 text-violet-300 focus:ring-0 w-4 h-4"
             />
           </label>
 
@@ -415,7 +415,7 @@ export const DistrictMap: React.FC = () => {
               type="checkbox"
               checked={layers.issues}
               onChange={(e) => setLayers({ ...layers, issues: e.target.checked })}
-              className="rounded border-slate-300 text-[#6d57d6] focus:ring-0 w-4 h-4"
+              className="rounded border-slate-300 text-violet-300 focus:ring-0 w-4 h-4"
             />
           </label>
         </div>

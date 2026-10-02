@@ -45,3 +45,15 @@ export const taskAction = z.discriminatedUnion('action', [
   z.object({ action: z.literal('review'), accepted: z.boolean(), notes: text }),
   z.object({ action: z.literal('extend'), deadline: date, reason: text }),
 ]);
+
+export const objectType = z.enum(['enterprise', 'investment_project', 'industrial_zone', 'infrastructure', 'social']);
+export const objectStatus = z.enum(['active', 'in_progress', 'planned', 'paused', 'risk']);
+export const objectInput = z.object({
+  name: text, type: objectType, mfyId: text, address: text,
+  lat: z.number().min(40).max(46), lng: z.number().min(55).max(63),
+  responsibleOrg: text, curator: text, status: objectStatus, description: optionalText,
+});
+export const objectPatch = z.object({
+  status: objectStatus.optional(), description: optionalText, curator: text.optional(),
+  responsibleOrg: text.optional(), address: text.optional(),
+}).refine((value) => Object.keys(value).length > 0, 'Empty patch');

@@ -2,12 +2,15 @@
 
 import React, { useState } from 'react';
 import { MfyMap } from '@/components/MfyMap';
+import { ObjectFormModal } from '@/components/ObjectFormModal';
 import { DistrictMap } from '@/components/DistrictMap';
 import { Compass, Radar } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 
 export default function MapPage() {
-  const { t } = useApp();
+  const { t, currentUser } = useApp();
+  const [formOpen, setFormOpen] = useState(false);
+  const canEdit = ['admin', 'hokim', 'coordinator', 'statistician'].includes(currentUser.role);
   // 'shumanay_model' is the 100% Shumanay territory radar model matching mydomen.uz
   const [activeView, setActiveView] = useState<'shumanay_model' | 'gis'>('shumanay_model');
 
@@ -40,7 +43,10 @@ export default function MapPage() {
 
       {/* Main View */}
       {activeView === 'shumanay_model' ? (
-        <MfyMap tall onSwitchToStreetGis={() => setActiveView('gis')} />
+        <>
+          <MfyMap tall onSwitchToStreetGis={() => setActiveView('gis')} onAddObject={canEdit ? () => setFormOpen(true) : undefined} />
+          {formOpen && <ObjectFormModal onClose={() => setFormOpen(false)} />}
+        </>
       ) : (
         <DistrictMap />
       )}

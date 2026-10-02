@@ -4,8 +4,9 @@ import React from 'react';
 import Link from 'next/link';
 import { useApp } from '@/context/AppContext';
 import { MfyMap } from '@/components/MfyMap';
+import { InsightsPanel } from '@/components/InsightsPanel';
 import { AreaChart, Columns, Donut, HBars, Sparkline, countBy, cumulativeByMonth, fmtNum, PALETTE } from '@/components/charts';
-import { AlertTriangle, CheckCircle2, Clock, TrendingUp, AlertOctagon, Building2, ArrowRight, Sparkles, FileCheck } from 'lucide-react';
+import { CheckCircle2, Clock, AlertOctagon, Building2, ArrowRight, FileCheck } from 'lucide-react';
 
 type Kpi = {
   label: string;
@@ -247,42 +248,7 @@ export const ExecutiveCabinet: React.FC = () => {
         </div>
       </section>
 
-      <section className="sc-panel">
-        <div className="sc-panel-heading">
-          <div className="flex items-center gap-4">
-            <span className="sc-icon-tile"><Sparkles size={20} /></span>
-            <div>
-              <div className="sc-eyebrow"><i /> AI analitika</div>
-              <h2>Analitikalıq túsindirme hám qarar qabıllaw usınısı</h2>
-            </div>
-          </div>
-          <span className="sc-status" data-tone="accent">Model: Shomanay-LLM-Context</span>
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-3">
-          {[
-            {
-              icon: AlertTriangle, tone: '#e7ab91', title: '1. Gaz basımı defitsiti (Diyxanabad)',
-              text: 'Gidroponika issıqxanasında gaz basımınıń 0.8 atm bolıwı 14.2 mlrd somlıq ekin ónimin nobud etiw qáwpin tuwdırmaqta. «Hududgaz» kárxanasına GRS-3 ten montajdı 2-oktyabrge shekem pitkeriw shárt.',
-            },
-            {
-              icon: Clock, tone: '#e5ba78', title: '2. KSZ transformator keshigiwi',
-              text: '1.5 MWt podstanciya qurılısınıń keshigiwi sebepli 3 kárxana iske túsiwi toqtap tur. Dálil tapsırılǵan, ǵárezsiz tekseriwshi M. Torebaev tárepinen qabıllaw tekseriwi talap etiledi.',
-            },
-            {
-              icon: TrendingUp, tone: '#80dcbc', title: '3. Paxta klasteri toqımashılıq kadrları',
-              text: '40 nafar jaslardı qısqa kurslarda oqıtıw tapsırması tabıslı orınlanıp qabıl etildi. Bul klasterdiń 2-fazası ushın 195 nafar tastıyıqlanǵan jumıs ornın támiyinledi.',
-            },
-          ].map(({ icon: Icon, tone, title, text }) => (
-            <div key={title} className="sc-report-card">
-              <span className="flex items-center gap-2 text-[13px] font-medium" style={{ color: tone }}>
-                <Icon size={15} /> {title}
-              </span>
-              <p className="sc-muted mt-3" style={{ fontSize: 12 }}>{text}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      <InsightsPanel />
     </div>
   );
 };
