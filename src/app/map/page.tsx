@@ -12,7 +12,7 @@ export default function MapPage() {
   const [formOpen, setFormOpen] = useState(false);
   const canEdit = ['admin', 'hokim', 'coordinator', 'statistician'].includes(currentUser.role);
   // 'shumanay_model' is the 100% Shumanay territory radar model matching mydomen.uz
-  const [activeView, setActiveView] = useState<'shumanay_model' | 'gis'>('shumanay_model');
+  const [activeView, setActiveView] = useState<'shumanay_model' | 'gis'>('gis');
 
   return (
     <div className="w-full space-y-4">
