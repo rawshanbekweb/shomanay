@@ -2,10 +2,11 @@
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useApp } from '@/context/AppContext';
-import { Box, Building2, Compass, Crosshair, Factory, Landmark, Layers, Minus, Orbit, Plus, Search, TrendingUp, TriangleAlert, Users, Briefcase, X, Zap } from 'lucide-react';
+import { Box, Building2, Compass, Crosshair, Factory, Landmark, Layers, Maximize2, Minimize2, Minus, Orbit, Plus, Search, TrendingUp, TriangleAlert, Users, Briefcase, X, Zap } from 'lucide-react';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import type { Map as GLMap, Marker, GeoJSONSource, StyleSpecification } from 'maplibre-gl';
 import type { DistrictObject, ObjectType } from '@/types';
+import { SHOMANAY_BOUNDARY } from '@/lib/shomanay-boundary';
 import { bboxOf, borderRing, buildTerritories, outsideMask, type LngLat } from '@/lib/geo';
 
 const escapeHtml = (value: string) => value.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
@@ -87,6 +88,8 @@ function acquireMap(): Promise<Persist> {
   if (persist) return Promise.resolve(persist);
   pending ??= (async () => {
     const gl = await import('maplibre-gl');
+    // webpack/Turbopack worker faylini topa olmaydi — public/maplibre dan beriladi (npm yangilanganda qayta nusxalang)
+    gl.setWorkerUrl('/maplibre/maplibre-gl-worker.mjs');
     const host = document.createElement('div');
     host.style.cssText = 'position:absolute;inset:0;width:100%;height:100%';
     const map = new gl.Map({
@@ -118,6 +121,9 @@ function acquireMap(): Promise<Persist> {
       paint: { 'fill-extrusion-color': ['get', 'color'], 'fill-extrusion-height': ['get', 'h'], 'fill-extrusion-base': 0, 'fill-extrusion-opacity': ['get', 'op'], 'fill-extrusion-vertical-gradient': true },
     });
     map.addLayer({ id: 'mfy-edge', type: 'line', source: 'mfy', paint: { 'line-color': ['get', 'edge'], 'line-width': ['get', 'ew'], 'line-opacity': 0.9 } });
+    // Chegara hamma narsaning ustida: qora hoshiya + yorqin chiziq (ustunlar yopib qo‘ymasin)
+    map.addLayer({ id: 'district-case', type: 'line', source: 'district', layout: { 'line-join': 'round' }, paint: { 'line-color': '#0b0f17', 'line-width': 8, 'line-opacity': 0.6 } });
+    map.addLayer({ id: 'district-top', type: 'line', source: 'district', layout: { 'line-join': 'round' }, paint: { 'line-color': '#ffd23f', 'line-width': 4 } });
     map.addLayer({ id: 'links', type: 'line', source: 'links', paint: { 'line-color': '#ff6b7d', 'line-width': 1.4, 'line-dasharray': [2, 3] } });
 
     map.on('mousemove', (e) => P.hooks?.setCursor([e.lngLat.lng, e.lngLat.lat]));
@@ -155,6 +161,7 @@ export const DistrictMap: React.FC = () => {
   const glRef = useRef<typeof import('maplibre-gl') | null>(null);
   const markersRef = useRef<Marker[]>([]);
   const compassRef = useRef<HTMLSpanElement>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
   const orbitRef = useRef(false);
 
   const [ready, setReady] = useState(false);
@@ -171,6 +178,8 @@ export const DistrictMap: React.FC = () => {
   const [orbit, setOrbit] = useState(false);
   const [cursor, setCursor] = useState<LngLat | null>(null);
   const [view, setView] = useState({ zoom: 11.6, pitch: TILT });
+  const [fullscreen, setFullscreen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   const onPassport = useRef(openObjectPassport);
   useEffect(() => { onPassport.current = openObjectPassport; }, [openObjectPassport]);
@@ -182,6 +191,8 @@ export const DistrictMap: React.FC = () => {
     () => buildTerritories(
       mfys.map((m) => ({ id: m.id, center: [m.centerCoords[1], m.centerCoords[0]] as LngLat })),
       [...mfys.flatMap((m) => m.polygon.map((p): LngLat => [p[1], p[0]])), ...objects.map((o): LngLat => [o.coords[1], o.coords[0]])],
+      0.035,
+      SHOMANAY_BOUNDARY,
     ),
     [mfys, objects],
   );
@@ -196,6 +207,32 @@ export const DistrictMap: React.FC = () => {
     const q = query.trim().toLowerCase();
     return objects.filter((o) => visible[o.type] && (!selectedMfy || o.mfyId === selectedMfy) && (!q || o.name.toLowerCase().includes(q) || o.address.toLowerCase().includes(q)));
   }, [objects, visible, selectedMfy, query]);
+
+  const results = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return [];
+    return objects.filter((o) => o.name.toLowerCase().includes(q) || o.address.toLowerCase().includes(q)).slice(0, 6);
+  }, [objects, query]);
+
+  const ranking = useMemo(
+    () => [...mfys].sort((a, b) => statOf(b.id, metric) - statOf(a.id, metric)).slice(0, 3),
+    [mfys, metric, statOf],
+  );
+
+  /* ───── to‘liq ekran, Esc, o‘lcham o‘zgarishi ───── */
+  useEffect(() => {
+    const onFs = () => { setFullscreen(document.fullscreenElement === rootRef.current); mapRef.current?.resize(); };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape' || (e.target as HTMLElement | null)?.tagName === 'INPUT') return;
+      setSelectedMfy(null);
+      setBaseOpen(false);
+    };
+    document.addEventListener('fullscreenchange', onFs);
+    window.addEventListener('keydown', onKey);
+    const ro = new ResizeObserver(() => mapRef.current?.resize());
+    if (rootRef.current) ro.observe(rootRef.current);
+    return () => { document.removeEventListener('fullscreenchange', onFs); window.removeEventListener('keydown', onKey); ro.disconnect(); };
+  }, []);
 
   /* ───── ulash: xarita bir marta yaratiladi, keyin faqat qayta ulanadi ───── */
   useEffect(() => {
@@ -413,6 +450,15 @@ export const DistrictMap: React.FC = () => {
     setSelectedMfy(null);
     map.fitBounds(bboxOf(territories.boundary), { padding: 80, pitch: TILT, bearing: BEARING, duration: 1500 });
   };
+  const toggleFullscreen = () => {
+    if (document.fullscreenElement) void document.exitFullscreen();
+    else void rootRef.current?.requestFullscreen?.().catch(() => {});
+  };
+  const flyToObject = (o: DistrictObject) => {
+    setSearchOpen(false);
+    mapRef.current?.flyTo({ center: [o.coords[1], o.coords[0]], zoom: 16.2, pitch: 62, duration: 1600 });
+    onPassport.current(o);
+  };
   const toggle3d = () => mapRef.current?.easeTo({ pitch: is3d ? 0 : TILT, duration: 900 });
 
   const selected = mfys.find((m) => m.id === selectedMfy) ?? null;
@@ -423,17 +469,32 @@ export const DistrictMap: React.FC = () => {
   const ctrlRight = selected ? { right: 'calc(min(320px, 100% - 2rem) + 2rem)' } : undefined;
 
   return (
-    <div className="gm-root gm3 relative w-full h-[calc(100dvh-170px)] min-h-[600px] rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-[#0b0f17]">
+    <div ref={rootRef} className={`gm-root gm3 relative w-full overflow-hidden ${fullscreen ? 'h-screen' : 'h-[calc(100dvh-170px)] min-h-[600px] rounded-3xl'} border border-white/10 shadow-2xl bg-[#0b0f17]`}>
       <div ref={containerRef} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} />
       {!ready && <div className="absolute inset-0 grid place-items-center text-sm text-slate-400">3D karta júklenbekte…</div>}
       <div className="gm-vignette pointer-events-none absolute inset-0" />
 
       {/* yuqori chap */}
       <div className="absolute left-4 top-4 z-[800] flex w-[min(360px,calc(100%-2rem))] flex-col gap-3">
-        <div className={`${panel} flex items-center gap-2 rounded-2xl px-3.5 py-2.5`}>
-          <Search className="h-4 w-4 opacity-60" />
-          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Obyekt yoki manzil izlew…" className="w-full bg-transparent text-sm outline-none placeholder:opacity-50" />
-          {query && <button onClick={() => setQuery('')} aria-label="Tazalaw"><X className="h-4 w-4 opacity-60" /></button>}
+        <div className="relative">
+          <div className={`${panel} flex items-center gap-2 rounded-2xl px-3.5 py-2.5`}>
+            <Search className="h-4 w-4 opacity-60" />
+            <input value={query} onChange={(e) => { setQuery(e.target.value); setSearchOpen(true); }} onFocus={() => setSearchOpen(true)} placeholder="Obyekt yoki manzil izlew…" className="w-full bg-transparent text-sm outline-none placeholder:opacity-50" />
+            {query && <button onClick={() => { setQuery(''); setSearchOpen(false); }} aria-label="Tazalaw"><X className="h-4 w-4 opacity-60" /></button>}
+          </div>
+          {searchOpen && results.length > 0 && (
+            <div className={`${panel} absolute left-0 right-0 top-full z-10 mt-1.5 space-y-0.5 rounded-2xl p-1.5`}>
+              {results.map((o) => {
+                const m = TYPE_META[o.type];
+                return (
+                  <button key={o.id} onClick={() => flyToObject(o)} className="gm-row">
+                    <span className="gm-dot" style={{ background: o.status === 'risk' ? '#ff6b7d' : m.color }}><m.Icon className="h-3 w-3 text-white" /></span>
+                    <span className="min-w-0 flex-1 text-left"><span className="block truncate text-xs">{o.name}</span><span className="block truncate text-[10px] opacity-60">{o.address}</span></span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
         <div className={`${panel} flex gap-1 rounded-2xl p-1.5`}>
           {METRICS.map((m) => (
@@ -449,6 +510,15 @@ export const DistrictMap: React.FC = () => {
           </div>
           <div className="h-2 rounded-full" style={{ background: `linear-gradient(90deg, ${mix(0.25, metricMeta.rgb)}, rgb(${r},${g},${b}))` }} />
           <div className="mt-1 flex justify-between text-[10px] opacity-60"><span>kem</span><span>kóp</span></div>
+          <div className="mt-2.5 space-y-0.5 border-t border-white/10 pt-2">
+            {ranking.map((m, i) => (
+              <button key={m.id} onClick={() => setSelectedMfy(m.id)} onMouseEnter={() => setHoverMfy(m.id)} onMouseLeave={() => setHoverMfy(null)} className="gm-row">
+                <span className="w-4 text-[10px] font-bold opacity-60">{i + 1}</span>
+                <span className="flex-1 truncate text-left text-xs">{m.name}</span>
+                <span className="text-xs font-semibold tabular-nums">{statOf(m.id, metric).toLocaleString('ru-RU')}</span>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -513,7 +583,7 @@ export const DistrictMap: React.FC = () => {
             {selectedObjects.map((o) => {
               const m = TYPE_META[o.type];
               return (
-                <button key={o.id} onClick={() => { mapRef.current?.flyTo({ center: [o.coords[1], o.coords[0]], zoom: 16.2, pitch: 62, duration: 1600 }); onPassport.current(o); }} className="gm-row">
+                <button key={o.id} onClick={() => flyToObject(o)} className="gm-row">
                   <span className="gm-dot" style={{ background: o.status === 'risk' ? '#ff6b7d' : m.color }}><m.Icon className="h-3 w-3 text-white" /></span>
                   <span className="flex-1 truncate text-left text-xs">{o.name}</span>
                 </button>
@@ -533,6 +603,7 @@ export const DistrictMap: React.FC = () => {
 
       {/* boshqaruv */}
       <div className="absolute bottom-10 right-4 z-[800] flex flex-col gap-2" style={ctrlRight}>
+        <button onClick={toggleFullscreen} title={fullscreen ? 'Ekrandan chiǵıw' : 'Tolıq ekran'} className={`${panel} grid h-10 w-10 place-items-center rounded-xl`}>{fullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}</button>
         <button onClick={toggle3d} title={is3d ? '2D ko‘rinish' : '3D ko‘rinish'} className={`${panel} grid h-10 w-10 place-items-center rounded-xl text-[11px] font-bold ${is3d ? 'ring-1 ring-violet-400/70' : ''}`}><Box className="h-4 w-4" /></button>
         <button onClick={() => setOrbit((v) => !v)} title="Aylanma kamera" className={`${panel} grid h-10 w-10 place-items-center rounded-xl ${orbit ? 'ring-1 ring-violet-400/70' : ''}`}><Orbit className="h-4 w-4" /></button>
         <button onClick={() => mapRef.current?.easeTo({ bearing: 0, duration: 700 })} title="Shımalǵa" className={`${panel} grid h-10 w-10 place-items-center rounded-xl`}><span ref={compassRef} style={{ display: 'grid', transform: `rotate(${-BEARING}deg)` }}><Compass className="h-4 w-4" /></span></button>

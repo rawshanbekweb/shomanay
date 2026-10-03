@@ -64,7 +64,7 @@ export interface Territories {
  * MFY markazlaridan Voronoi bo‘linmalari quriladi va rayon konturiga kesiladi.
  * Kontur — barcha nuqtalarning qavariq qobig‘i, biroz kengaytirilgan va yumaloqlangan.
  */
-export function buildTerritories(sites: { id: string; center: LngLat }[], extra: LngLat[], gap = 0.035): Territories {
+export function buildTerritories(sites: { id: string; center: LngLat }[], extra: LngLat[], gap = 0.035, realOutline?: LngLat[]): Territories {
   if (!sites.length) return { cells: {}, boundary: [] };
   const sp = sites.map((s) => ({ id: s.id, p: proj(s.center) }));
   const all: P[] = [...sp.map((s) => s.p), ...extra.map(proj)];
@@ -79,7 +79,9 @@ export function buildTerritories(sites: { id: string; center: LngLat }[], extra:
     const d = Math.hypot(dx, dy) || 1;
     return [cx + dx * 1.22 + (dx / d) * span * 0.08, cy + dy * 1.22 + (dy / d) * span * 0.08];
   });
-  const outline = chaikin(grown, 3);
+  // Haqiqiy (OSM) chegara berilsa — shu ishlatiladi, aks holda markazlardan hisoblangan kontur.
+  const real = realOutline && realOutline.length > 3 ? realOutline.slice(0, -1).map(proj) : null;
+  const outline = real ?? chaikin(grown, 3);
 
   const cells: Record<string, LngLat[]> = {};
   sp.forEach((s) => {
@@ -108,7 +110,10 @@ export function bboxOf(ring: LngLat[]): [LngLat, LngLat] {
 /** Chegara bo‘ylab ingichka halqa (tashqi kontur = markazdan biroz kattalashtirilgan) — 3D "devor" uchun. */
 export function borderRing(boundary: LngLat[], grow = 1.012): LngLat[][] {
   if (boundary.length < 4) return [];
-  const pts = boundary.slice(0, -1);
+  let pts = boundary.slice(0, -1);
+  // tashqi halqa soat miliga qarshi (CCW), ichki teshik esa teskari bo‘lishi shart
+  const area = pts.reduce((s, p, i) => { const q = pts[(i + 1) % pts.length]; return s + (p[0] * q[1] - q[0] * p[1]); }, 0);
+  if (area < 0) pts = [...pts].reverse();
   const cx = pts.reduce((s, p) => s + p[0], 0) / pts.length;
   const cy = pts.reduce((s, p) => s + p[1], 0) / pts.length;
   const outer = pts.map(([x, y]): LngLat => [cx + (x - cx) * grow, cy + (y - cy) * grow]);
@@ -123,5 +128,7 @@ export function outsideMask(boundary: LngLat[], factor = 6): LngLat[][] {
   const cy = (s + n) / 2;
   const dx = Math.max((e - w) * factor, 1);
   const dy = Math.max((n - s) * factor, 1);
-  return [[[cx - dx, cy - dy], [cx + dx, cy - dy], [cx + dx, cy + dy], [cx - dx, cy + dy], [cx - dx, cy - dy]], [...boundary].reverse()];
+  const area = boundary.reduce((sum, p, i) => { const q = boundary[(i + 1) % boundary.length]; return sum + (p[0] * q[1] - q[0] * p[1]); }, 0);
+  const hole = area > 0 ? [...boundary].reverse() : [...boundary]; // teshik tashqi halqaga (CCW) teskari bo‘lishi kerak
+  return [[[cx - dx, cy - dy], [cx + dx, cy - dy], [cx + dx, cy + dy], [cx - dx, cy + dy], [cx - dx, cy - dy]], hole];
 }
